@@ -104,6 +104,7 @@ $show_complete_tasks = rand(0, 1);
                         <td class="task__date">10.10.2019</td>
                         <td class="task__controls"></td>
                     </tr>
+                    <?php endif;?>
                 </table>
             </main>
         </div>
