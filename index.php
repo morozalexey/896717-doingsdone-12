@@ -1,29 +1,46 @@
 <?php
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
-$categories = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
-$tasks = [
+$categories = [
+    [
+        'name' => 'Входящие'
+    ], 
+    [
+        'name' => 'Учеба'
+    ],
+    [
+        'name' => 'Работа'
+    ], 
+    [
+        'name' => 'Домашние дела'
+    ], 
+    [
+        'name' =>'Авто'
+    ]
+];
+
+$tasks = [    
     [
         'name' => 'Собеседование в IT компании',
-        'date' => 01.12.2019,
+        'date' => '2019-12-01',
         'category' => 'Работа',
         'done' => false
     ],
     [
         'name' => 'Выполнить тестовое задание',
-        'date' => 25.12.2019,
+        'date' => '2019-12-25',
         'category' => 'Работа',
         'done' => false
     ],
     [
         'name' => 'Сделать задание первого раздела',
-        'date' => 21.12.2019,
+        'date' => '2019-12-21',
         'category' => 'Учеба',
         'done' => true
     ],
     [
         'name' => 'Встреча с другом',
-        'date' => 22.12.2019,
+        'date' => '2019-12-22',
         'category' => 'Входящие',
         'done' => false
     ],
@@ -54,7 +71,7 @@ $tasks = [
 
 <body>
 <h1 class="visually-hidden">Дела в порядке</h1>
-
+<pre><?php print_r($tasks);?></pre>
 <div class="page-wrapper">
     <div class="container container--with-sidebar">
         <header class="main-header">
@@ -83,7 +100,7 @@ $tasks = [
                     <ul class="main-navigation__list">
                         <?php foreach($categories as $category) :?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?=$category['name'];?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
                         <?php endforeach;?>
@@ -121,13 +138,13 @@ $tasks = [
 
 
                 <table class="tasks">
-                    <?php foreach($tasks as $task => $item) : ?>
-                    <?php if ( !($show_complete_tasks) && ($tasks[$task]['done']) ) { continue;}?>    
-                    <tr class="tasks__item task <?= ($tasks[$task]['done']) ? 'task--completed' : '' ; ?>">
+                    <?php foreach($tasks as $task) : ?>
+                    <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue;}?>    
+                    <tr class="tasks__item task <?= ($task['done']) ? 'task--completed' : '' ; ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
                                 <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                <span class="checkbox__text"><?= $tasks[$task]['name'] ; ?></span>
+                                <span class="checkbox__text"><?= $task['name'] ; ?></span>
                             </label>
                         </td>
 
@@ -135,7 +152,7 @@ $tasks = [
                             <a class="download-link" href="#">Home.psd</a>
                         </td>
 
-                        <td class="task__date"><?= $tasks[$task]['date'] ; ?></td>
+                        <td class="task__date"><?= $task['date'] ; ?></td>
                     </tr>
                     <?php endforeach ;?>
                     <pre><?php //var_dump($tasks); ?></pre>
