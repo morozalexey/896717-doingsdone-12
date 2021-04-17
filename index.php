@@ -1,59 +1,53 @@
 <?php
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
-$categories = [
-    [
-        'name' => 'Входящие'
-    ], 
-    [
-        'name' => 'Учеба'
-    ],
-    [
-        'name' => 'Работа'
-    ], 
-    [
-        'name' => 'Домашние дела'
-    ], 
-    [
-        'name' =>'Авто'
-    ]
+$categories = [ 
+    'inbox' => 'Входящие',
+
+    'study' => 'Учеба',
+
+    'work' => 'Работа',
+
+    'home' => 'Домашние дела',
+
+    'cars' => 'Авто'
 ];
 
 $tasks = [    
     [
         'name' => 'Собеседование в IT компании',
         'date' => '2019-12-01',
-        'category' => 'Работа',
+        'category' => $categories['work'],
         'done' => false
     ],
     [
         'name' => 'Выполнить тестовое задание',
         'date' => '2019-12-25',
-        'category' => 'Работа',
+        'category' => $categories['study'],
         'done' => false
     ],
     [
         'name' => 'Сделать задание первого раздела',
         'date' => '2019-12-21',
-        'category' => 'Учеба',
+        'category' => $categories['study'],
         'done' => true
     ],
     [
         'name' => 'Встреча с другом',
         'date' => '2019-12-22',
-        'category' => 'Входящие',
+        'category' => $categories['inbox'],
         'done' => false
     ],
     [
         'name' => 'Купить корм для кота',
         'date' => null,
-        'category' => 'Домашние дела',
+        'category' => $categories['home'],
         'done' => false
     ],
     [
         'name' => 'Заказать пиццу',
         'date' => null,
-        'category' => 'Домашние дела',
+        'category' => $categories['home'],
         'done' => false
     ]
 ]
@@ -71,7 +65,6 @@ $tasks = [
 
 <body>
 <h1 class="visually-hidden">Дела в порядке</h1>
-<pre><?php print_r($tasks);?></pre>
 <div class="page-wrapper">
     <div class="container container--with-sidebar">
         <header class="main-header">
@@ -98,9 +91,9 @@ $tasks = [
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach($categories as $category) :?>
+                        <?php foreach($categories as $category => $item) :?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$category['name'];?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?=$item;?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
                         <?php endforeach;?>
@@ -155,8 +148,6 @@ $tasks = [
                         <td class="task__date"><?= $task['date'] ; ?></td>
                     </tr>
                     <?php endforeach ;?>
-                    <pre><?php //var_dump($tasks); ?></pre>
-                    <pre><?php //var_dump($tasks[$task]['name']); ?></pre>
 
                     <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
                     <?php if ($show_complete_tasks) :?>
