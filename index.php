@@ -52,13 +52,24 @@ $tasks = [
     ]
 ];
 
-function projectCount($arrTasks, $categoryName){
+/**
+ * Функция возвращает число задач для переданного проекта.
+ * 
+ * @param $tasks принимает массив
+ * @param $category_name принимает название категории
+ * 
+ * Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
+ * 
+ * @return $count колличество задач в проектке
+ */
+
+function projectCount($tasks, $category_name){
     $count = 0; 
-    foreach ($arrTasks as $item) {        
-        if ($item['category'] !== $categoryName){
-            continue;
+    foreach ($tasks as $task){        
+        if ($task['category'] === $category_name){
+            $count++;
         }
-        $count++;
+        continue;
     }
     return $count; 
 }
