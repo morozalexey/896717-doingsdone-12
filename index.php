@@ -91,9 +91,9 @@ $tasks = [
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach($categories as $category => $item) :?>
+                        <?php foreach($categories as $category) :?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$item;?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
                         <?php endforeach;?>
