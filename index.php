@@ -63,10 +63,10 @@ $tasks = [
  * @return $count колличество задач в проектке
  */
 
-function projectCount($tasks, $category_name){
+function project_сount($tasks, $category_name) {
     $count = 0; 
-    foreach ($tasks as $task){        
-        if ($task['category'] === $category_name){
+    foreach ($tasks as $task) {        
+        if ($task['category'] === $category_name) {
             $count++;
         }
         continue;
@@ -116,7 +116,7 @@ function projectCount($tasks, $category_name){
                         <?php foreach($categories as $category) :?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
-                            <span class="main-navigation__list-item-count"><?= projectCount($tasks, $category); ?></span>
+                            <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category); ?></span>
                         </li>
                         <?php endforeach;?>
                     </ul>
