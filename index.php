@@ -50,7 +50,29 @@ $tasks = [
         'category' => $categories['home'],
         'done' => false
     ]
-]
+];
+
+/**
+ * Функция возвращает число задач для переданного проекта.
+ * 
+ * @param $tasks принимает массив
+ * @param $category_name принимает название категории
+ * 
+ * Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
+ * 
+ * @return $count колличество задач в проектке
+ */
+
+function project_сount($tasks, $category_name) {
+    $count = 0; 
+    foreach ($tasks as $task) {        
+        if ($task['category'] === $category_name) {
+            $count++;
+        }
+        continue;
+    }
+    return $count; 
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -91,10 +113,10 @@ $tasks = [
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach($categories as $category => $item) :?>
+                        <?php foreach($categories as $category) :?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$item;?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
+                            <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category); ?></span>
                         </li>
                         <?php endforeach;?>
                     </ul>
