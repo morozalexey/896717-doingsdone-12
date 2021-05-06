@@ -53,16 +53,13 @@ $tasks = [
 ];
 
 /**
- * Функция возвращает число задач для переданного проекта.
+ * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
  * 
  * @param $tasks принимает массив
  * @param $category_name принимает название категории
  * 
- * Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
- * 
  * @return $count колличество задач в проектке
  */
-
 function project_сount($tasks, $category_name) {
     $count = 0; 
     foreach ($tasks as $task) {        
@@ -113,12 +110,12 @@ function project_сount($tasks, $category_name) {
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach($categories as $category) :?>
+                        <?php foreach($categories as $category) : ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
-                            <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category); ?></span>
+                            <a class="main-navigation__list-item-link" href="#"><?= $category ; ?></a>
+                            <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category) ; ?></span>
                         </li>
-                        <?php endforeach;?>
+                        <?php endforeach ; ?>
                     </ul>
                 </nav>
 
@@ -154,7 +151,7 @@ function project_сount($tasks, $category_name) {
 
                 <table class="tasks">
                     <?php foreach($tasks as $task) : ?>
-                    <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue;}?>    
+                    <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue ; } ?>    
                     <tr class="tasks__item task <?= ($task['done']) ? 'task--completed' : '' ; ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
@@ -169,10 +166,10 @@ function project_сount($tasks, $category_name) {
 
                         <td class="task__date"><?= $task['date'] ; ?></td>
                     </tr>
-                    <?php endforeach ;?>
+                    <?php endforeach ; ?>
 
                     <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-                    <?php if ($show_complete_tasks) :?>
+                    <?php if ($show_complete_tasks) : ?>
                     <tr class="tasks__item task task--completed">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
@@ -183,7 +180,7 @@ function project_сount($tasks, $category_name) {
                         <td class="task__date">10.10.2019</td>
                         <td class="task__controls"></td>
                     </tr>
-                    <?php endif;?>
+                    <?php endif ; ?>
                 </table>
             </main>
         </div>
