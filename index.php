@@ -3,13 +3,9 @@
 $show_complete_tasks = rand(0, 1);
 $categories = [ 
     'inbox' => 'Входящие',
-
     'study' => 'Учеба',
-
     'work' => 'Работа',
-
     'home' => 'Домашние дела',
-
     'cars' => 'Авто'
 ];
 
@@ -19,32 +15,27 @@ $tasks = [
         'date' => '2019-12-01',
         'category' => $categories['work'],
         'done' => false
-    ],
-    [
+    ], [
         'name' => 'Выполнить тестовое задание',
         'date' => '2019-12-25',
         'category' => $categories['study'],
         'done' => false
-    ],
-    [
+    ], [
         'name' => 'Сделать задание первого раздела',
         'date' => '2019-12-21',
         'category' => $categories['study'],
         'done' => true
-    ],
-    [
+    ], [
         'name' => 'Встреча с другом',
         'date' => '2019-12-22',
         'category' => $categories['inbox'],
         'done' => false
-    ],
-    [
+    ], [
         'name' => 'Купить корм для кота',
         'date' => null,
         'category' => $categories['home'],
         'done' => false
-    ],
-    [
+    ], [
         'name' => 'Заказать пиццу',
         'date' => null,
         'category' => $categories['home'],
@@ -53,16 +44,13 @@ $tasks = [
 ];
 
 /**
- * Функция возвращает число задач для переданного проекта.
- * 
+ * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
+ *  
  * @param $tasks принимает массив
  * @param $category_name принимает название категории
- * 
- * Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
- * 
- * @return $count колличество задач в проектке
+ *  
+ * @return integer колличество задач в проектке
  */
-
 function project_сount($tasks, $category_name) {
     $count = 0; 
     foreach ($tasks as $task) {        
@@ -113,12 +101,12 @@ function project_сount($tasks, $category_name) {
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach($categories as $category) :?>
+                        <?php foreach($categories as $category) : ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $category ; ?></a>
                             <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category); ?></span>
                         </li>
-                        <?php endforeach;?>
+                        <?php endforeach ; ?>
                     </ul>
                 </nav>
 
@@ -145,7 +133,7 @@ function project_сount($tasks, $category_name) {
 
                     <label class="checkbox">
                         <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
-                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?= ($show_complete_tasks) ? 'checked' : ''; ?>>
+                        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?= ($show_complete_tasks) ? 'checked' : '' ; ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
                 </div>
@@ -154,7 +142,7 @@ function project_сount($tasks, $category_name) {
 
                 <table class="tasks">
                     <?php foreach($tasks as $task) : ?>
-                    <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue;}?>    
+                    <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue ; } ?>    
                     <tr class="tasks__item task <?= ($task['done']) ? 'task--completed' : '' ; ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
@@ -169,10 +157,10 @@ function project_сount($tasks, $category_name) {
 
                         <td class="task__date"><?= $task['date'] ; ?></td>
                     </tr>
-                    <?php endforeach ;?>
+                    <?php endforeach ; ?>
 
                     <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-                    <?php if ($show_complete_tasks) :?>
+                    <?php if ($show_complete_tasks) : ?>
                     <tr class="tasks__item task task--completed">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
@@ -183,7 +171,7 @@ function project_сount($tasks, $category_name) {
                         <td class="task__date">10.10.2019</td>
                         <td class="task__controls"></td>
                     </tr>
-                    <?php endif;?>
+                    <?php endif ; ?>
                 </table>
             </main>
         </div>
