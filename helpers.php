@@ -142,3 +142,22 @@ function include_template($name, array $data = []) {
 
     return $result;
 }
+
+/**
+ * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
+ *  
+ * @param $tasks принимает массив
+ * @param $category_name принимает название категории
+ *  
+ * @return integer колличество задач в проектке
+ */
+function project_сount($tasks, $category_name) {
+    $count = 0; 
+    foreach ($tasks as $task) {        
+        if ($task['category'] === $category_name) {
+            $count++;
+        }
+        continue;
+    }
+    return $count; 
+}
