@@ -57,7 +57,7 @@ $layout_content = include_template(
     'layout.php', 
     [
         'page_content' => $page_content, 
-        'page_title' => "Дела в порядке"
+        'page_title' => 'Дела в порядке'
     ]
 ); 
 

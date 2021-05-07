@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title><?= $page_title ; ?></title>
+    <title><?= $page_title; ?></title>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/flatpickr.min.css">
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </header>
-        <?= $page_content ; ?>
+        <?= $page_content; ?>
     </div>
 </div>
 
