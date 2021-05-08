@@ -161,3 +161,17 @@ function project_сount($tasks, $category_name) {
     }
     return $count; 
 }
+
+/**
+ * Функция считает разницу между текущей датой и датой задачи, переводя дату задачи в timstamp и приводя  разицу между значениями к целому числу
+ *  
+ * @param string принимает дату задачи
+ *  
+ * @return integer разницу между двумя значениями в часах
+ */
+function compare_dates($task_date){
+    $current_date = time();
+    $task_date_to_timestamp = strtotime($task_date);
+    $diff = floor(($task_date_to_timestamp - $current_date)/3600);
+    return $diff;
+}
