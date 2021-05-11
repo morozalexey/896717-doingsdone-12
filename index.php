@@ -11,32 +11,32 @@ $categories = [
 $tasks = [    
     [
         'name' => 'Собеседование в IT компании',
-        'date' => '2019-12-01',
+        'date' => '2022-05-17',
         'category' => $categories['work'],
         'done' => false
     ], [
         'name' => 'Выполнить тестовое задание',
-        'date' => '2019-12-25',
+        'date' => '2022-05-17',
         'category' => $categories['study'],
         'done' => false
     ], [
         'name' => 'Сделать задание первого раздела',
-        'date' => '2019-12-21',
+        'date' => '2022-05-17',
         'category' => $categories['study'],
         'done' => true
     ], [
         'name' => 'Встреча с другом',
-        'date' => '2019-12-22',
+        'date' => '2022-05-17',
         'category' => $categories['inbox'],
         'done' => false
     ], [
         'name' => 'Купить корм для кота',
-        'date' => null,
+        'date' => '2021-05-09',
         'category' => $categories['home'],
         'done' => false
     ], [
         'name' => 'Заказать пиццу',
-        'date' => null,
+        'date' => '2022-05-17',
         'category' => $categories['home'],
         'done' => false
     ]
