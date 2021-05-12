@@ -174,7 +174,5 @@ function is_deadline($task_date){
     $current_date = time();
     $task_date_to_timestamp = strtotime($task_date);
     $diff = floor(($task_date_to_timestamp - $current_date)/SECONDS_IN_HOUR);
-    if($diff <= 24){
-        return true;
-    }    
+    return ($diff <= 24);        
 }
