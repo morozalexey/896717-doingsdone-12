@@ -48,7 +48,7 @@
             <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue ; } ?>    
             <tr class="tasks__item task 
                 <?= ($task['done']) ? 'task--completed' : '' ; ?> 
-                <?= deadline($task['date']); ?>
+                <?= (is_deadline($task['date'])) ? 'task--important' : '' ; ?>
             ">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
