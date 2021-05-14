@@ -145,17 +145,17 @@ function include_template($name, array $data = []) {
 }
 
 /**
- * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной категории ($category_name) со значением ключа ['category'] в каждой задаче. При совпадении она приплюсует единицу к $count.
+ * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной id категории ($category_id) со значением ключа ['cat_id'] в каждой задаче. При совпадении она приплюсует единицу к $count.
  *  
- * @param $tasks принимает массив
- * @param $category_name принимает название категории
+ * @param array $tasks принимает массив 
+ * @param integer $category_id принимает значение id категории
  *  
  * @return integer колличество задач в проектке
  */
-function project_сount($tasks, $category_name) {
+function project_сount($tasks, $category_id) {
     $count = 0; 
     foreach ($tasks as $task) {        
-        if ($task['category'] === $category_name) {
+        if ($task['cat_id'] === $category_id) {
             $count++;
         }
         continue;
