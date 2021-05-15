@@ -7,7 +7,7 @@
                 <?php foreach($categories as $category) : ?>
                 <li class="main-navigation__list-item">
                     <a class="main-navigation__list-item-link" href="#"><?= $category['name'] ; ?></a>
-                    <span class="main-navigation__list-item-count"><?= project_сount($tasks, $category['id']) ; ?></span>
+                    <span class="main-navigation__list-item-count"><?= task_сount($tasks, $category['id']) ; ?></span>
                 </li>
                 <?php endforeach ; ?>
             </ul>

@@ -152,13 +152,12 @@ function include_template($name, array $data = []) {
  *  
  * @return integer колличество задач в проектке
  */
-function project_сount($tasks, $category_id) {
+function task_сount($tasks, $category_id) {
     $count = 0; 
     foreach ($tasks as $task) {        
         if ($task['cat_id'] === $category_id) {
             $count++;
         }
-        continue;
     }
     return $count; 
 }
@@ -175,4 +174,36 @@ function is_deadline($task_date){
     $task_date_to_timestamp = strtotime($task_date);
     $diff = floor(($task_date_to_timestamp - $current_date)/SECONDS_IN_HOUR);
     return ($diff <= 24);        
+}
+
+/**
+ * Функция получает из базы массив категорий
+ *  
+ * @param $con подключение к базе
+ * @param int $user_id принимает id пользователя
+ *  
+ * @return array массив с категориями
+ */
+function get_categories($user_id, $con){    
+    $sql = 'SELECT * FROM category WHERE user_id = ?';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Функция получает из базы массив задач
+ *  
+ * @param $con подключение к базе
+ *  
+ * @return array массив задач
+ */
+function get_tasks($con){
+    $sql = 'SELECT * FROM task';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);    
+    return $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);;
 }
