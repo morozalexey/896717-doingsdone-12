@@ -207,3 +207,20 @@ function get_tasks($con){
     $res = mysqli_stmt_get_result($stmt);    
     return mysqli_fetch_all($res, MYSQLI_ASSOC);;
 }
+
+/**
+ * Функция получает из базы массив задач по выбранной категории
+ *  
+ * @param $con подключение к базе
+ * @param int $cat_id принимает id категории
+ *  
+ * @return array массив задач
+ */
+function get_tasks_by_category($con, $cat_id){
+    $sql = 'SELECT * FROM task WHERE cat_id = ?';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $cat_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);    
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
+}
