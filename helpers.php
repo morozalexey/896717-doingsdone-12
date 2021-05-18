@@ -190,7 +190,7 @@ function get_categories($user_id, $con){
     mysqli_stmt_bind_param($stmt, 'i', $user_id);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return $categories = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
 /**
@@ -205,5 +205,5 @@ function get_tasks($con){
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);    
-    return $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);;
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
 }
