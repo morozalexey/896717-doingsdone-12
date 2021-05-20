@@ -224,3 +224,62 @@ function get_tasks_by_category($con, $cat_id){
     $res = mysqli_stmt_get_result($stmt);    
     return mysqli_fetch_all($res, MYSQLI_ASSOC);;
 }
+
+/**
+ * Функция шаблонизации. В зависимости от полученных данных формирует шаблон страницы
+ *  
+ * @param $con подключение к базе
+ * @param int $cat_id принимает id категории
+ * @param int $user_id принимает id пользователя
+ * @param int $show_complete_tasks принимает значения 0 или 1
+ *  
+ * @return str контент страницы
+ */
+function layout_content($con, $cat_id, $user_id, $show_complete_tasks){
+    if ($cat_id){
+        $page_content = include_template(
+            'main.php', 
+            [
+                'categories' => get_categories($user_id, $con), 
+                'tasks' => get_tasks_by_category($con, $cat_id),
+                'all_tasks' => get_tasks($con), 
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );        
+        if(empty(get_tasks_by_category($con, $cat_id))){
+            $layout_content = include_template(
+                'layout.php', 
+                [
+                    'page_content' => 'Ошибка 404', 
+                    'page_title' => "Дела в порядке"
+                ]
+            ); 
+        }else{
+            $layout_content = include_template(
+                'layout.php', 
+                [
+                    'page_content' => $page_content, 
+                    'page_title' => "Дела в порядке"
+                ]
+            ); 
+        }    
+        return print($layout_content);    
+    }else{   
+        $page_content = include_template(
+            'main.php', 
+            [
+                'categories' => get_categories($user_id, $con), 
+                'tasks' => get_tasks($con), 
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );    
+        $layout_content = include_template(
+            'layout.php', 
+            [
+                'page_content' => $page_content, 
+                'page_title' => 'Дела в порядке'
+            ]
+        );    
+        return print($layout_content);
+    }
+}
