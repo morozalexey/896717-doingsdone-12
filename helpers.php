@@ -226,60 +226,18 @@ function get_tasks_by_category($con, $cat_id){
 }
 
 /**
- * Функция шаблонизации. В зависимости от полученных данных формирует шаблон страницы
+ * Функция формирования массива для функции include_template.
  *  
- * @param $con подключение к базе
- * @param int $cat_id принимает id категории
- * @param int $user_id принимает id пользователя
- * @param int $show_complete_tasks принимает значения 0 или 1
+ * @param $page_content данные для формирования контента страницы
+ * @param str $page_title 
  *  
- * @return str контент страницы
+ * @return arr массив для функции include_template
  */
-function layout_content($con, $cat_id, $user_id, $show_complete_tasks){
-    if ($cat_id){
-        $page_content = include_template(
-            'main.php', 
-            [
-                'categories' => get_categories($user_id, $con), 
-                'tasks' => get_tasks_by_category($con, $cat_id),
-                'all_tasks' => get_tasks($con), 
-                'show_complete_tasks' => $show_complete_tasks
-            ]
-        );        
-        if(empty(get_tasks_by_category($con, $cat_id))){
-            $layout_content = include_template(
-                'layout.php', 
-                [
-                    'page_content' => 'Ошибка 404', 
-                    'page_title' => "Дела в порядке"
-                ]
-            ); 
-        }else{
-            $layout_content = include_template(
-                'layout.php', 
-                [
-                    'page_content' => $page_content, 
-                    'page_title' => "Дела в порядке"
-                ]
-            ); 
-        }    
-        return print($layout_content);    
-    }else{   
-        $page_content = include_template(
-            'main.php', 
-            [
-                'categories' => get_categories($user_id, $con), 
-                'tasks' => get_tasks($con), 
-                'show_complete_tasks' => $show_complete_tasks
-            ]
-        );    
-        $layout_content = include_template(
-            'layout.php', 
-            [
-                'page_content' => $page_content, 
-                'page_title' => 'Дела в порядке'
-            ]
-        );    
-        return print($layout_content);
-    }
+
+function include_template_arr($page_content, $page_title){
+    return
+    [
+        'page_content' => $page_content, 
+        'page_title' => $page_title
+    ];    
 }
