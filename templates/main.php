@@ -5,9 +5,11 @@
         <nav class="main-navigation">
             <ul class="main-navigation__list">
                 <?php foreach($categories as $category) : ?>
-                <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= $category['name'] ; ?></a>
-                    <span class="main-navigation__list-item-count"><?= task_сount($tasks, $category['id']) ; ?></span>
+                <li class="main-navigation__list-item <?= ($_GET['cat_id'] === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
+                ">
+                    <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
+                    <span class="main-navigation__list-item-count">
+                    <?= (!empty($_GET['cat_id'])) ? task_сount($all_tasks, $category['id']) : task_сount($tasks, $category['id']) ;?></span>
                 </li>
                 <?php endforeach ; ?>
             </ul>
