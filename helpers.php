@@ -224,20 +224,3 @@ function get_tasks_by_category($con, $cat_id){
     $res = mysqli_stmt_get_result($stmt);    
     return mysqli_fetch_all($res, MYSQLI_ASSOC);;
 }
-
-/**
- * Функция формирования массива для функции include_template.
- *  
- * @param $page_content данные для формирования контента страницы
- * @param str $page_title 
- *  
- * @return arr массив для функции include_template
- */
-
-function include_template_arr($page_content, $page_title){
-    return
-    [
-        'page_content' => $page_content, 
-        'page_title' => $page_title
-    ];    
-}
