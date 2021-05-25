@@ -4,7 +4,6 @@ require_once 'init.php';
 $show_complete_tasks = rand(0, 1);
 $user_id = 1;
 $cat_id = $_GET['cat_id'] ?? false;
-$page_title = 'Дела в порядке';
 if ($cat_id) {    
     $page_content = include_template(
         'main.php', 
@@ -20,7 +19,11 @@ if ($cat_id) {
         exit;
     } else {
         $layout_content = include_template(
-            'layout.php', include_template_arr($page_content, $page_title)
+            'layout.php', 
+            [
+                'page_content' => $page_content, 
+                'page_title' => 'Дела в порядке'
+            ]
         ); 
     }    
     return print($layout_content);    
@@ -34,7 +37,11 @@ if ($cat_id) {
         ]
     );    
     $layout_content = include_template(
-        'layout.php', include_template_arr($page_content, $page_title)
+        'layout.php', 
+        [
+            'page_content' => $page_content, 
+            'page_title' => 'Дела в порядке'
+        ]
     );    
     return print($layout_content);
 }
