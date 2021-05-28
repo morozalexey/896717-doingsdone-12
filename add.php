@@ -7,7 +7,7 @@ $cat_id = $_GET['cat_id'] ?? false;
 
 if ($cat_id) {    
     $page_content = include_template(
-        'main.php', 
+        'add.php', 
         [
             'categories' => get_categories($con, $user_id), 
             'tasks' => get_tasks_by_category($con, $cat_id),
@@ -21,7 +21,7 @@ if ($cat_id) {
     } 
 } else {   
     $page_content = include_template(
-        'main.php', 
+        'add.php', 
         [
             'categories' => get_categories($con, $user_id), 
             'tasks' => get_tasks($con), 
