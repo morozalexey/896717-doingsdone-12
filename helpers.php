@@ -212,7 +212,7 @@ function get_tasks($con)
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
 /**
@@ -229,7 +229,7 @@ function get_tasks_by_category($con, $cat_id)
     $stmt = db_get_prepare_stmt($con, $sql, [$cat_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
 /**
@@ -243,3 +243,23 @@ function getPostVal($name)
 {
     return $_POST[$name] ?? "";
 }
+
+/**
+ * Функция получает из базы id категории
+ *
+ * @param $con подключение к базе
+ * @param int $cat_name принимает имя категории
+ *
+ * @return int id категории
+ */
+function get_cat_id_by_cat_name($con, $cat_name)
+{
+    $sql = 'SELECT DISTINCT category.id FROM task JOIN category ON task.cat_id = category.id WHERE category.name = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [$cat_name]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $arr = mysqli_fetch_array($res, MYSQLI_NUM);
+    return $arr[0];
+}
+

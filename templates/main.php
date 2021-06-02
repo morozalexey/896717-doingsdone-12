@@ -47,8 +47,11 @@
                         <span class="checkbox__text"><?= htmlspecialchars($task['name']) ; ?></span>
                     </label>
                 </td>
+
                 <td class="task__file">
-                    <a class="download-link" href="#">Home.psd</a>
+                    <?php if (!empty($task['file'])) : ?>
+                    <a class="download-link" href="<?= $task['file']; ?>">Файл</a>
+                    <?endif;?>
                 </td>
                 <td class="task__date"><?= $task['date'] ; ?></td>
             </tr>
