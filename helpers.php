@@ -1,5 +1,6 @@
 <?php
-define('SECONDS_IN_HOUR', 3600);
+const SECONDS_IN_HOUR = 3600;
+const HOURS_IN_DAY = 24;
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -14,7 +15,8 @@ define('SECONDS_IN_HOUR', 3600);
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date) : bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
@@ -30,7 +32,8 @@ function is_date_valid(string $date) : bool {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -127,7 +130,8 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -146,48 +150,50 @@ function include_template($name, array $data = []) {
 
 /**
  * Функция возвращает число задач для переданного проекта. Пройдя по массиву с задачами, функция сравнит значение выбранной id категории ($category_id) со значением ключа ['cat_id'] в каждой задаче. При совпадении она приплюсует единицу к $count.
- *  
- * @param array $tasks принимает массив 
+ *
+ * @param array $tasks принимает массив
  * @param integer $category_id принимает значение id категории
- *  
+ *
  * @return integer колличество задач в проектке
  */
-function task_сount($tasks, $category_id) {
-    $count = 0; 
-    foreach ($tasks as $task) {        
+function task_сount($tasks, $category_id)
+{
+    $count = 0;
+    foreach ($tasks as $task) {
         if ($task['cat_id'] === $category_id) {
             $count++;
         }
     }
-    return $count; 
+    return $count;
 }
 
 /**
  * Функция считает разницу между текущей датой и датой задачи, переводя дату задачи в timstamp и приводя  разицу между значениями к целому числу
- *  
+ *
  * @param string принимает дату задачи
- *  
+ *
  * @return integer разницу между двумя значениями в часах
  */
-function is_deadline($task_date){
+function is_deadline($task_date)
+{
     $current_date = time();
     $task_date_to_timestamp = strtotime($task_date);
     $diff = floor(($task_date_to_timestamp - $current_date)/SECONDS_IN_HOUR);
-    return ($diff <= 24);        
+    return ($diff <= HOURS_IN_DAY);
 }
 
 /**
  * Функция получает из базы массив категорий
- *  
+ *
  * @param $con подключение к базе
  * @param int $user_id принимает id пользователя
- *  
+ *
  * @return array массив с категориями
  */
-function get_categories($user_id, $con){    
-    $sql = 'SELECT * FROM category WHERE user_id = ?';
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+function get_categories($con, $user_id)
+{
+    $sql = 'SELECT id, name, user_id FROM category WHERE user_id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -195,49 +201,65 @@ function get_categories($user_id, $con){
 
 /**
  * Функция получает из базы массив задач
- *  
+ *
  * @param $con подключение к базе
- *  
+ *
  * @return array массив задач
  */
-function get_tasks($con){
-    $sql = 'SELECT * FROM task';
+function get_tasks($con)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done FROM task';
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);    
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
 /**
  * Функция получает из базы массив задач по выбранной категории
- *  
+ *
  * @param $con подключение к базе
  * @param int $cat_id принимает id категории
- *  
+ *
  * @return array массив задач
  */
-function get_tasks_by_category($con, $cat_id){
-    $sql = 'SELECT * FROM task WHERE cat_id = ?';
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $cat_id);
+function get_tasks_by_category($con, $cat_id)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE cat_id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$cat_id]);
     mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);    
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);;
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
 /**
- * Функция формирования массива для функции include_template.
- *  
- * @param $page_content данные для формирования контента страницы
- * @param str $page_title 
- *  
- * @return arr массив для функции include_template
- */
-
-function include_template_arr($page_content, $page_title){
-    return
-    [
-        'page_content' => $page_content, 
-        'page_title' => $page_title
-    ];    
+* Функция для получения значений из POST-запроса.
+*
+* @param str $name название поля формы
+*
+* @return str значение поля формы
+*/
+function getPostVal($name)
+{
+    return $_POST[$name] ?? "";
 }
+
+/**
+ * Функция получает из базы id категории
+ *
+ * @param $con подключение к базе
+ * @param int $cat_name принимает имя категории
+ *
+ * @return int id категории
+ */
+function get_cat_id_by_cat_name($con, $cat_name)
+{
+    $sql = 'SELECT DISTINCT category.id FROM task JOIN category ON task.cat_id = category.id WHERE category.name = ?';
+
+    $stmt = db_get_prepare_stmt($con, $sql, [$cat_name]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $arr = mysqli_fetch_array($res, MYSQLI_NUM);
+    return $arr[0];
+}
+
