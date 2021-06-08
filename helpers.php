@@ -255,7 +255,6 @@ function getPostVal($name)
 function get_cat_id_by_cat_name($con, $cat_name)
 {
     $sql = 'SELECT DISTINCT category.id FROM task JOIN category ON task.cat_id = category.id WHERE category.name = ?';
-
     $stmt = db_get_prepare_stmt($con, $sql, [$cat_name]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
@@ -263,3 +262,48 @@ function get_cat_id_by_cat_name($con, $cat_name)
     return $arr[0];
 }
 
+/**
+ * Функция добавляет в базу новую задачу
+ *
+ * @param $con подключение к базе
+ * @param arr $data принимает массив с данными
+ *
+ * @return bool возвращает true/false
+ */
+function insert_task_to_db($con, $data=[])
+{
+    $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, 1, NOW())';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция добавляет в базу нового пользователя
+ *
+ * @param $con подключение к базе
+ * @param arr $data принимает массив с данными
+ *
+ * @return bool возвращает true/false
+ */
+function insert_user_to_db($con, $data=[])
+{
+    $sql = 'INSERT INTO task (name, email, pass, dt_add) VALUES (?, ?, ?, NOW())';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция проверяет введенный email на дубликаты
+ *
+ * @param $con подключение к базе
+ * @param str $user_mail принимает email от пользователя
+ *
+ * @return bool возвращает true/false
+ */
+function check_email_dublicate($con, $user_mail)
+{
+    $sql = "SELECT id FROM users WHERE email = '$user_mail'";
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_mail]);
+    mysqli_stmt_execute($stmt);
+    return mysqli_query($con, $sql);
+}
