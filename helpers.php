@@ -287,7 +287,7 @@ function insert_task_to_db($con, $data=[])
  */
 function insert_user_to_db($con, $data=[])
 {
-    $sql = 'INSERT INTO task (name, email, pass, dt_add) VALUES (?, ?, ?, NOW())';
+    $sql = 'INSERT INTO users (name, email, pass, dt_add) VALUES (?, ?, ?, NOW())';
     $stmt = db_get_prepare_stmt($con, $sql, $data);
     return mysqli_stmt_execute($stmt);
 }
@@ -302,8 +302,10 @@ function insert_user_to_db($con, $data=[])
  */
 function check_email_dublicate($con, $user_mail)
 {
-    $sql = "SELECT id FROM users WHERE email = '$user_mail'";
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_mail]);
-    mysqli_stmt_execute($stmt);
-    return mysqli_query($con, $sql);
+    $email = mysqli_real_escape_string($con, $user_mail);
+    $sql = "SELECT id FROM users WHERE email = '$email'";
+    $res = mysqli_query($con, $sql);
+    if (mysqli_num_rows($res) > 0) {
+        return true;
+    }
 }

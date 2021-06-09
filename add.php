@@ -46,16 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ]
         );
     }
+} else {
+    $page_content = include_template(
+        'add.php',
+        [
+            'categories' => get_categories($con, $user_id),
+            'tasks' => get_tasks($con),
+            'show_complete_tasks' => $show_complete_tasks
+        ]
+    );
 }
-
-$page_content = include_template(
-    'add.php',
-    [
-        'categories' => get_categories($con, $user_id),
-        'tasks' => get_tasks($con),
-        'show_complete_tasks' => $show_complete_tasks
-    ]
-);
 
 $layout_content = include_template(
     'layout.php',

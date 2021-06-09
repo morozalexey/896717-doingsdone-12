@@ -5,7 +5,7 @@
     </section>
     <main class="content__main">
         <h2 class="content__main-heading">Регистрация аккаунта</h2>
-        <form class="form" action="registeration.php" method="post" autocomplete="off">
+        <form class="form" action="register.php" method="post" autocomplete="off">
             <div class="form__row">
                 <?php $error_classname = !empty($errors['email']) ? "form__input--error" : ""; ?>
                 <?php $error_text = !empty($errors['email']) ? $errors['email'] : ""; ?>
@@ -28,7 +28,8 @@
                 <p class="form__message"><?= $error_text; ?></p>
             </div>
             <div class="form__row form__row--controls">
-                <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
+
+                <p class="error-message"><?= (!empty($errors)) ? "Пожалуйста, исправьте ошибки в форме" : ""; ?></p>
                 <input class="button" type="submit" name="submit" value="Зарегистрироваться">
             </div>
         </form>
