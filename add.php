@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $task_name = $_POST['name'];
     $task_date = $_POST['date'];
     $task_cat_id = get_cat_id_by_cat_name($con, $_POST['project']);
+    $task_file = null;
 
     if (empty($errors)) {
 
@@ -27,13 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $filename = $_FILES['file']['name'];
             $filename = uniqid() . $filename;
             move_uploaded_file($tmp_name, 'uploads/' . $filename);
+            $task_file = 'uploads/' . $filename;
         }
 
-        $task_file = 'uploads/' . $filename;
-
-        $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, 1, NOW())';
-        $stmt = db_get_prepare_stmt($con, $sql, [$task_name, $task_date, $task_cat_id, $task_file]);
-        $res = mysqli_stmt_execute($stmt);
+        insert_task_to_db($con, [$task_name, $task_date, $task_cat_id, $task_file]);
 
         header('Location: /index.php');
 
@@ -49,31 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
     }
 } else {
-    if ($cat_id) {
-        $page_content = include_template(
-            'add.php',
-            [
-                'categories' => get_categories($con, $user_id),
-                'tasks' => get_tasks_by_category($con, $cat_id),
-                'all_tasks' => get_tasks($con),
-                'show_complete_tasks' => $show_complete_tasks
-            ]
-        );
-        if (empty(get_tasks_by_category($con, $cat_id))) {
-            header("HTTP/1.0 404 Not Found");
-            exit;
-        }
-    } else {
-        $page_content = include_template(
-            'add.php',
-            [
-                'categories' => get_categories($con, $user_id),
-                'tasks' => get_tasks($con),
-                'show_complete_tasks' => $show_complete_tasks
-            ]
-        );
-    }
-
+    $page_content = include_template(
+        'add.php',
+        [
+            'categories' => get_categories($con, $user_id),
+            'tasks' => get_tasks($con),
+            'show_complete_tasks' => $show_complete_tasks
+        ]
+    );
 }
 
 $layout_content = include_template(
