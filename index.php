@@ -45,5 +45,5 @@ if (!empty($_SESSION['user']['id'])) {
     );
 }
 
-
 print($layout_content);
+// тестовый комент для склейки версий
