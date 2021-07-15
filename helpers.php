@@ -216,6 +216,23 @@ function get_tasks($con)
 }
 
 /**
+ * Функция получает из базы массив задач
+ *
+ * @param $con подключение к базе
+ * @param $con подключение к базе
+ *
+ * @return array массив задач
+ */
+function get_tasks_by_user_id($con, $user_id)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
+    $stmt = mysqli_prepare($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
  * Функция получает из базы массив задач по выбранной категории
  *
  * @param $con подключение к базе
