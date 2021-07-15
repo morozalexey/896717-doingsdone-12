@@ -47,3 +47,4 @@ if (!empty($_SESSION['user']['id'])) {
 
 
 print($layout_content);
+// коммент тест, первая попытка не удалась
