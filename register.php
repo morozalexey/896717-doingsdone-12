@@ -1,5 +1,6 @@
 <?php
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

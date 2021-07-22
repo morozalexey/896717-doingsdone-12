@@ -1,8 +1,10 @@
 <?php
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
 $show_complete_tasks = rand(0, 1);
-$user_id = 1;
+$user = $_SESSION['user'];
+$user_id = $user['id'];
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -51,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'add.php',
         [
             'categories' => get_categories($con, $user_id),
-            'tasks' => get_tasks($con),
+            'tasks' => get_tasks($con, $user_id),
             'show_complete_tasks' => $show_complete_tasks
         ]
     );

@@ -1,50 +1,42 @@
 <?php
-// phpinfo();
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $email = trim($_POST['email']);
+    $pass = $_POST['pass'];
+    $user = create_user($con, $email);
+    $hash = $user['pass'];
 
     $required = ['email', 'pass'];
     $errors = [];
     foreach ($required as $field) {
         if (empty($_POST[$field])) {
             $errors[$field] = 'Это поле надо заполнить';
-        }
-    }
-
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $res = mysqli_query($con, $sql);
-
-    $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
-
-    $pass = $_POST['pass'];
-    $hash = $user['pass'];
-
-    if (!count($errors) AND $user) {
-        if (password_verify($pass, $hash)) {
-            $_SESSION['user'] = $user;
-        } else {
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'E-mail введён некорректно';
+        } elseif (!check_email($con, $email)) {
+            $errors['email'] = 'Такой пользователь не найден';
+        } elseif (!password_verify($pass, $hash)) {
             $errors['pass'] = 'Неверный пароль';
         }
-    } else {
-        $errors['email'] = 'Такой пользователь не найден';
     }
 
-
-
-    if (count($errors)) {
-    $page_content = include_template('auth.php', ['form' => $_POST, 'errors' => $errors]);
-    } else {
-        header("Location: /index.php");
+    if (!count($errors) AND $user) {
+        $_SESSION['user'] = $user;
+        header("Location: index.php");
         exit();
+    } else {
+        $page_content = include_template('auth.php', ['form' => $_POST, 'errors' => $errors]);
     }
+
 } else {
-    $page_content = include_template('auth.php', []);
+    $page_content = include_template('auth.php');
 
     if (isset($_SESSION['user'])) {
-        header("Location: /index.php");
+        header("Location: index.php");
         exit();
     }
 }

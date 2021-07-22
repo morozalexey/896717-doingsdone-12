@@ -1,18 +1,24 @@
 <?php
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
 $show_complete_tasks = rand(0, 1);
-$user_id = !empty($_SESSION['user']['id']);
+if (!empty($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+    $is_auth = $user['id'];
+    $user_name = $user['name'];
+}
+
 $cat_id = $_GET['cat_id'] ?? false;
 
-if (!empty($_SESSION['user']['id'])) {
+if (!empty($user)) {
     if ($cat_id) {
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $user_id),
+                'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks_by_category($con, $cat_id),
-                'all_tasks' => get_tasks($con),
+                'all_tasks' => get_tasks($con, $is_auth),
                 'show_complete_tasks' => $show_complete_tasks
             ]
         );
@@ -24,8 +30,8 @@ if (!empty($_SESSION['user']['id'])) {
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $user_id),
-                'tasks' => get_tasks($con),
+                'categories' => get_categories($con, $is_auth),
+                'tasks' => get_tasks($con, $is_auth),
                 'show_complete_tasks' => $show_complete_tasks
             ]
         );
@@ -35,15 +41,20 @@ if (!empty($_SESSION['user']['id'])) {
         'layout.php',
         [
             'page_content' => $page_content,
-            'page_title' => 'Дела в порядке'
+            'page_title' => 'Дела в порядке',
+            'user' => $user,
+            'user_name' => $user_name
         ]
     );
 } else {
     $layout_content = include_template(
-        'guest.php',
-        []
+        'guest.php'
     );
 }
 
 print($layout_content);
-// коммент тест, первая попытка не удалась
+echo '<pre>';
+
+print_r($user);
+
+
