@@ -1,4 +1,5 @@
 <?php
+require_once 'models.php';
 const SECONDS_IN_HOUR = 3600;
 const HOURS_IN_DAY = 24;
 /**
@@ -182,4 +183,17 @@ function is_deadline($task_date)
     return ($diff <= HOURS_IN_DAY);
 }
 
-
+/**
+ * Функция проверяет авторизован ли пользователь
+ *
+ * @param array принимает данные пользователя из сессии
+ *
+ * @return array возвращает массив с даннымы пользователя
+ */
+function check_user_auth($data = [])
+{
+    if (!empty($data)) {
+        $user = $data['user'];
+    }
+    return $user;
+}

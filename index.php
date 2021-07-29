@@ -1,13 +1,10 @@
 <?php
 require_once 'helpers.php';
-require_once 'models.php';
 require_once 'init.php';
 $show_complete_tasks = rand(0, 1);
-if (!empty($_SESSION['user'])) {
-    $user = $_SESSION['user'];
-    $is_auth = $user['id'];
-    $user_name = $user['name'];
-}
+$user = check_user_auth($_SESSION);
+$is_auth = $user['id'];
+$user_name = $user['name'];
 
 $cat_id = $_GET['cat_id'] ?? false;
 
@@ -53,8 +50,3 @@ if (!empty($user)) {
 }
 
 print($layout_content);
-echo '<pre>';
-
-print_r($user);
-
-
