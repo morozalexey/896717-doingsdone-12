@@ -2,7 +2,10 @@
 require_once 'helpers.php';
 require_once 'init.php';
 $show_complete_tasks = rand(0, 1);
-$user_id = 1;
+$user = check_user_auth($_SESSION);
+$is_auth = $user['id'];
+$user_name = $user['name'];
+
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -39,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $page_content = include_template(
             'add.php',
             [
-                'categories' => get_categories($con, $user_id),
+                'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks($con),
                 'show_complete_tasks' => $show_complete_tasks,
                 'errors' => $errors
@@ -50,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $page_content = include_template(
         'add.php',
         [
-            'categories' => get_categories($con, $user_id),
-            'tasks' => get_tasks($con),
+            'categories' => get_categories($con, $is_auth),
+            'tasks' => get_tasks($con, $is_auth),
             'show_complete_tasks' => $show_complete_tasks
         ]
     );
@@ -61,7 +64,9 @@ $layout_content = include_template(
     'layout.php',
     [
         'page_content' => $page_content,
-        'page_title' => 'Дела в порядке'
+        'page_title' => 'Дела в порядке',
+        'user' => $user,
+        'user_name' => $user_name
     ]
 );
 
