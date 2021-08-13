@@ -8,7 +8,7 @@ $user_name = $user['name'];
 
 $cat_id = $_GET['cat_id'] ?? false;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $required_fields = ['name', 'date'];
     $errors = [];
