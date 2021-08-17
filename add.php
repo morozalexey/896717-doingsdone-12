@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $task_file = 'uploads/' . $filename;
         }
 
-        insert_task_to_db($con, [$task_name, $task_date, $task_cat_id, $task_file]);
+        insert_task_to_db($con, [$task_name, $task_date, $task_cat_id, $task_file, $is_auth]);
 
         header('Location: /index.php');
 

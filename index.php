@@ -7,6 +7,7 @@ $is_auth = $user['id'];
 $user_name = $user['name'];
 
 $cat_id = $_GET['cat_id'] ?? false;
+$search = $_GET['search'] ?? false;
 
 if (!empty($user)) {
     if ($cat_id) {
@@ -15,13 +16,25 @@ if (!empty($user)) {
             [
                 'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks_by_category($con, $cat_id),
-                'all_tasks' => get_tasks($con, $is_auth),
-                'show_complete_tasks' => $show_complete_tasks
+                'tasks' => get_tasks($con, $is_auth)
             ]
         );
         if (empty(get_tasks_by_category($con, $cat_id))) {
             header("HTTP/1.0 404 Not Found");
             exit;
+        }
+    } elseif($search) {
+        $page_content = include_template(
+            'main.php',
+            [
+                'categories' => get_categories($con, $is_auth),
+                'tasks' => get_tasks_by_search($con, [$search]),
+                'all_tasks' => get_tasks($con, $is_auth),
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );
+        if (empty(get_tasks_by_search($con, [$search]))) {
+            $page_content = include_template('search.php');
         }
     } else {
         $page_content = include_template(
@@ -50,3 +63,5 @@ if (!empty($user)) {
 }
 
 print($layout_content);
+//echo '<pre>';
+var_dump(get_tasks_by_search($con, [$search]));

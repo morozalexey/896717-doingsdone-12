@@ -1,6 +1,6 @@
 <div class="content">
     <section class="content__side">
-    <h2 class="content__side-heading">Проекты</h2>
+    <h2 class="content__side-heading">Категории</h2>
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach($categories as $category) : ?>
@@ -13,7 +13,7 @@
             <?php endforeach ; ?>
         </ul>
     </nav>
-    <a class="button button--transparent button--plus content__side-button" href="form-project.html">Добавить проект</a>
+    <a class="button button--transparent button--plus content__side-button" href="add_category.php">Добавить категорию</a>
     </section>
     <main class="content__main">
     <h2 class="content__main-heading">Добавление задачи</h2>
@@ -21,7 +21,7 @@
         <div class="form__row">
             <?php
             $error_classname = !empty($errors['name']) ? "form__input--error" : "";
-            $error_text = !empty($errors['name']) ? $errors['date'] : "";
+            $error_text = !empty($errors['name']) ? $errors['name'] : "";
             ?>
             <label class="form__label" for="name">Название <sup>*</sup></label>
             <input class="form__input <?= $error_classname; ?>" type="text" name="name" id="name" value="<?= getPostVal('name'); ?>" placeholder="Введите название">
@@ -30,6 +30,7 @@
         <div class="form__row">
             <label class="form__label" for="project">Проект <sup>*</sup></label>
             <select class="form__input form__input--select" name="project" id="project">
+            <option value="">Выберете категорию</option>
             <?php foreach($categories as $category) : ?>
                 <option value="<?= $category['name'] ; ?>"><?= $category['name'] ; ?></option>
             <?php endforeach ; ?>

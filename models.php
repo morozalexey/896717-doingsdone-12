@@ -91,7 +91,7 @@ function get_cat_id_by_cat_name($con, $cat_name)
  */
 function insert_task_to_db($con, $data=[])
 {
-    $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, 1, NOW())';
+    $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, ?, NOW())';
     $stmt = db_get_prepare_stmt($con, $sql, $data);
     return mysqli_stmt_execute($stmt);
 }
@@ -163,4 +163,38 @@ function check_email($con, $email)
     if (mysqli_num_rows($res) > 0) {
         return true;
     }
+}
+
+/**
+ * Функция добавляет в базу новую категорию
+ *
+ * @param $con подключение к базе
+ * @param arr $data принимает массив с данными
+ *
+ * @return bool возвращает true/false
+ */
+function insert_category_to_db($con, $data=[])
+{
+    $sql = 'INSERT INTO category (name, user_id) VALUES (?, ?)';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция получает из базы массив задач по выбранной категории
+ *
+ * @param $con подключение к базе
+ * @param int $search_data принимает id категории
+ * @param int $user_id принимает id юзера
+ *
+ * @return array массив задач
+ */
+
+function get_tasks_by_search($con, $data=[])
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE MATCH(name) AGAINST (?)';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }

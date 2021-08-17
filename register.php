@@ -1,6 +1,5 @@
 <?php
 require_once 'helpers.php';
-require_once 'models.php';
 require_once 'init.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -55,4 +54,3 @@ $layout_content = include_template(
 );
 
 print($layout_content);
-var_dump(check_email_dublicate($con, $user_mail));
