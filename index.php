@@ -1,13 +1,16 @@
 <?php
 require_once 'helpers.php';
 require_once 'init.php';
-$show_complete_tasks = rand(0, 1);
+
 $user = check_user_auth($_SESSION);
 $is_auth = $user['id'];
 $user_name = $user['name'];
-
+$task_checked = $_GET['check'] ?? false;
+$task_id = $_GET['task_id'] ?? false;
+$show_complete_tasks = $_GET['show_completed'] ?? 0;
 $cat_id = $_GET['cat_id'] ?? false;
 $search = $_GET['search'] ?? false;
+$tasks_controls= $_GET['tasks-controls'] ?? false;
 
 if (!empty($user)) {
     if ($cat_id) {
@@ -16,14 +19,17 @@ if (!empty($user)) {
             [
                 'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks_by_category($con, $cat_id),
-                'tasks' => get_tasks($con, $is_auth)
+                'all_tasks' => get_tasks($con, $is_auth),
+                'show_complete_tasks' => $show_complete_tasks,
+                'cat_id' => $cat_id
             ]
         );
         if (empty(get_tasks_by_category($con, $cat_id))) {
             header("HTTP/1.0 404 Not Found");
             exit;
         }
-    } elseif($search) {
+    //полнотекстовый поиск
+    } elseif ($search) {
         $page_content = include_template(
             'main.php',
             [
@@ -36,6 +42,40 @@ if (!empty($user)) {
         if (empty(get_tasks_by_search($con, [$search]))) {
             $page_content = include_template('search.php');
         }
+    //переключатель выполненных задач
+    } elseif ($show_complete_tasks) {
+        $page_content = include_template(
+            'main.php',
+            [
+                'categories' => get_categories($con, $is_auth),
+                'tasks' => get_tasks($con, $is_auth),
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );
+    //изменение параметра done (не работает)
+    } elseif ($task_checked) {
+        set_done ($con, $task_id, $task_checked);
+
+        $page_content = include_template(
+            'main.php',
+            [
+                'categories' => get_categories($con, $is_auth),
+                'tasks' => get_tasks($con, $is_auth),
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );
+    //фильтр по срокам задач
+    } elseif ($tasks_controls) {
+        $task_filter = get_tasks_controls($con, $is_auth, $tasks_controls);
+
+        $page_content = include_template(
+            'main.php',
+            [
+                'categories' => get_categories($con, $is_auth),
+                'tasks' => $task_filter,
+                'show_complete_tasks' => $show_complete_tasks
+            ]
+        );
     } else {
         $page_content = include_template(
             'main.php',
@@ -61,7 +101,8 @@ if (!empty($user)) {
         'guest.php'
     );
 }
-
 print($layout_content);
-//echo '<pre>';
-var_dump(get_tasks_by_search($con, [$search]));
+
+echo '<pre>';
+var_dump($task_checked);
+echo '</pre>';

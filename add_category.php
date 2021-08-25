@@ -6,7 +6,7 @@ $is_auth = $user['id'];
 $user_name = $user['name'];
 $cat_id = $_GET['cat_id'] ?? false;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $category_name = $_POST['name'];
 

@@ -4,7 +4,7 @@
         <nav class="main-navigation">
             <ul class="main-navigation__list">
                 <?php foreach($categories as $category) : ?>
-                <li class="main-navigation__list-item <?= ($_GET['cat_id'] === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
+                <li class="main-navigation__list-item <?= (intval($cat_id) === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
                 ">
                     <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
                     <span class="main-navigation__list-item-count">
@@ -23,14 +23,21 @@
         </form>
         <div class="tasks-controls">
             <nav class="tasks-switch">
-                <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-                <a href="/" class="tasks-switch__item">Повестка дня</a>
-                <a href="/" class="tasks-switch__item">Завтра</a>
-                <a href="/" class="tasks-switch__item">Просроченные</a>
+                <a href="/index.php?tasks-controls=all" class="tasks-switch__item
+                <?= ($_GET['tasks-controls'] === 'all') ? 'tasks-switch__item--active':'' ?>
+                ">Все задачи</a>
+                <a href="/index.php?tasks-controls=today" class="tasks-switch__item
+                <?= ($_GET['tasks-controls'] === 'today') ? 'tasks-switch__item--active':'' ?>">Повестка дня</a>
+                <a href="/index.php?tasks-controls=tommorow" class="tasks-switch__item
+                <?= ($_GET['tasks-controls'] === 'tommorow') ? 'tasks-switch__item--active':'' ?>">Завтра</a>
+                <a href="/index.php?tasks-controls=overdue" class="tasks-switch__item
+                <?= ($_GET['tasks-controls'] === 'overdue') ? 'tasks-switch__item--active':'' ?>">Просроченные</a>
             </nav>
             <label class="checkbox">
                 <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
-                <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?= ($show_complete_tasks) ? 'checked' : '' ; ?>>
+                <input class="checkbox__input visually-hidden show_completed" type="checkbox" name="done"
+                <?= ($show_complete_tasks) ? 'checked' : '' ;?>
+                >
                 <span class="checkbox__text">Показывать выполненные</span>
             </label>
         </div>
@@ -43,7 +50,7 @@
             ">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= ($task['id']) ; ?>">
                         <span class="checkbox__text"><?= htmlspecialchars($task['name']) ; ?></span>
                     </label>
                 </td>
@@ -59,3 +66,4 @@
         </table>
     </main>
 </div>
+

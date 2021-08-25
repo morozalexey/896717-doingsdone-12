@@ -189,7 +189,6 @@ function insert_category_to_db($con, $data=[])
  *
  * @return array массив задач
  */
-
 function get_tasks_by_search($con, $data=[])
 {
     $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE MATCH(name) AGAINST (?)';
@@ -197,4 +196,104 @@ function get_tasks_by_search($con, $data=[])
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+
+
+/**
+ * Функция получает из базы массив задач в зависимости от переданного параметра временного промежутка
+ *
+ * @param $con подключение к базе
+ * @param $user_id айдишник пользователя
+ * @param $tasks_controls
+ *
+ * @return array массив задач
+ */
+function get_tasks_controls($con, $user_id, $tasks_controls)
+{
+    if ($tasks_controls === 'today') {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1';
+    } elseif ($tasks_controls === 'tommorow') {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1';
+    } elseif ($tasks_controls === 'overdue') {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) <= 0';
+    } else {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
+    }
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+
+//просрочка
+// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW())< 0 (<1)
+
+//сегодня
+// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW()) = 1
+
+//завтра
+// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW()) > 1
+
+
+
+
+
+
+
+
+/**
+ * Функция меняет значение поле done на 1
+ *
+ * @param $con подключение к базе
+ * @param int $task_id принимает id задачи
+ *
+ */
+function set_task_done($con, $task_id)
+{
+    $sql = 'UPDATE task  SET done = 1 WHERE id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+    return mysqli_stmt_execute($stmt);
+}
+
+
+//не работает
+
+
+/**
+ * Функция меняет значение поле done на 0
+ *
+ * @param $con подключение к базе
+ * @param int $task_id принимает id задачи
+ *
+ */
+function set_task_actual($con, $task_id)
+{
+    $sql = 'UPDATE task  SET done = 0 WHERE id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+    return mysqli_stmt_execute($stmt);
+}
+
+function set_done($con, $task_id, $task_checked)
+{
+    // $sql = 'SELECT id, done  FROM task WHERE $task_id = ?';
+    // $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+    // mysqli_stmt_execute($stmt);
+    // $res = mysqli_stmt_get_result($stmt);
+    // $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+    if ($task_checked === '1'){
+        $sql = 'UPDATE task  SET done = 0 WHERE id = ?';
+        $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+        mysqli_stmt_execute($stmt);
+        return $task_checked == 1;
+    }
+
+    if ($task_checked === '0' OR $task_checked === false) {
+        $sql = 'UPDATE task  SET done = 1 WHERE id = ?';
+        $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+        mysqli_stmt_execute($stmt);
+        return $task_checked == 0;
+    }
 }

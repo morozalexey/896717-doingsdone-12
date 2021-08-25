@@ -195,7 +195,6 @@ function check_user_auth($data = [])
     if (!empty($data)) {
         $user = $data['user'];
         return $user;
-    } else {
-        return false;
     }
+    return false;
 }
