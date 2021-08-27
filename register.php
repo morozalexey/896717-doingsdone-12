@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $required_fields = ['email', 'password', 'name'];
     $errors = [];
 
-    $user_name = $_POST['name'];
+    $user_name = htmlspecialchars($_POST['name']);
     $user_mail = $_POST['email'];
     $user_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $layout_content = include_template(
     'layout_reg.php',
     [
-        'page_content' => $page_content,
+        'page_content' => isset($page_content),
         'page_title' => 'Регистрация'
     ]
 );

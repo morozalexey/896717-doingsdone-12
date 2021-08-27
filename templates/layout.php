@@ -20,14 +20,14 @@
                 <div class="main-header__side-item user-menu">
                     <?php if (!empty($user)) : ?>
                     <div class="user-menu__data">
-                        <p><?= $user_name ?></p>
+                        <p><?= htmlspecialchars($user_name) ?></p>
                         <a href="logout.php">Выйти</a>
                     </div>
                     <?php else : ?>
                     <div class="main-header__side">
                         <a class="main-header__side-item button button--transparent" href="auth.php">Войти</a>
                     </div>
-                    <? endif ; ?>
+                    <?php endif ; ?>
                 </div>
             </div>
         </header>

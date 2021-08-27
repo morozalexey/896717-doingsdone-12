@@ -4,9 +4,9 @@
         <nav class="main-navigation">
             <ul class="main-navigation__list">
                 <?php foreach($categories as $category) : ?>
-                <li class="main-navigation__list-item <?= (intval($cat_id) === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
+                <li class="main-navigation__list-item <?= (isset($cat_id) && intval($cat_id) === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
                 ">
-                    <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
+                    <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= htmlspecialchars($category['name']) ; ?></a>
                     <span class="main-navigation__list-item-count">
                     <?= (!empty($_GET['cat_id'])) ? task_сount($all_tasks, $category['id']) : task_сount($tasks, $category['id']) ;?></span>
                 </li>
@@ -24,14 +24,14 @@
         <div class="tasks-controls">
             <nav class="tasks-switch">
                 <a href="/index.php?tasks-controls=all" class="tasks-switch__item
-                <?= ($_GET['tasks-controls'] === 'all') ? 'tasks-switch__item--active':'' ?>
+                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'all') ? 'tasks-switch__item--active':'' ?>
                 ">Все задачи</a>
                 <a href="/index.php?tasks-controls=today" class="tasks-switch__item
-                <?= ($_GET['tasks-controls'] === 'today') ? 'tasks-switch__item--active':'' ?>">Повестка дня</a>
+                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'today') ? 'tasks-switch__item--active':'' ?>">Повестка дня</a>
                 <a href="/index.php?tasks-controls=tommorow" class="tasks-switch__item
-                <?= ($_GET['tasks-controls'] === 'tommorow') ? 'tasks-switch__item--active':'' ?>">Завтра</a>
+                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'tommorow') ? 'tasks-switch__item--active':'' ?>">Завтра</a>
                 <a href="/index.php?tasks-controls=overdue" class="tasks-switch__item
-                <?= ($_GET['tasks-controls'] === 'overdue') ? 'tasks-switch__item--active':'' ?>">Просроченные</a>
+                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'overdue') ? 'tasks-switch__item--active':'' ?>">Просроченные</a>
             </nav>
             <label class="checkbox">
                 <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
@@ -58,7 +58,7 @@
                 <td class="task__file">
                     <?php if (!empty($task['file'])) : ?>
                     <a class="download-link" href="<?= $task['file']; ?>">Файл</a>
-                    <?endif;?>
+                    <?php endif;?>
                 </td>
                 <td class="task__date"><?= $task['date'] ; ?></td>
             </tr>

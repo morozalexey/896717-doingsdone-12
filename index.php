@@ -3,8 +3,10 @@ require_once 'helpers.php';
 require_once 'init.php';
 
 $user = check_user_auth($_SESSION);
-$is_auth = $user['id'];
-$user_name = $user['name'];
+$is_auth = isset($user['id']) ? $user['id'] : false;
+if ($is_auth) {
+    $user_name = $user['name'];
+}
 $task_checked = $_GET['check'] ?? false;
 $task_id = $_GET['task_id'] ?? false;
 $show_complete_tasks = $_GET['show_completed'] ?? 0;
@@ -49,7 +51,8 @@ if (!empty($user)) {
             [
                 'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks($con, $is_auth),
-                'show_complete_tasks' => $show_complete_tasks
+                'show_complete_tasks' => $show_complete_tasks,
+                'cat_id' => $cat_id
             ]
         );
     //изменение параметра done (не работает)
@@ -61,7 +64,8 @@ if (!empty($user)) {
             [
                 'categories' => get_categories($con, $is_auth),
                 'tasks' => get_tasks($con, $is_auth),
-                'show_complete_tasks' => $show_complete_tasks
+                'show_complete_tasks' => $show_complete_tasks,
+                'cat_id' => $cat_id
             ]
         );
     //фильтр по срокам задач
@@ -73,7 +77,8 @@ if (!empty($user)) {
             [
                 'categories' => get_categories($con, $is_auth),
                 'tasks' => $task_filter,
-                'show_complete_tasks' => $show_complete_tasks
+                'show_complete_tasks' => $show_complete_tasks,
+                'cat_id' => $cat_id
             ]
         );
     } else {
@@ -102,7 +107,3 @@ if (!empty($user)) {
     );
 }
 print($layout_content);
-
-echo '<pre>';
-var_dump($task_checked);
-echo '</pre>';

@@ -179,7 +179,7 @@ function is_deadline($task_date)
 {
     $current_date = time();
     $task_date_to_timestamp = strtotime($task_date);
-    $diff = floor(($task_date_to_timestamp - $current_date)/SECONDS_IN_HOUR);
+    $diff = floor(($task_date_to_timestamp - $current_date) / SECONDS_IN_HOUR);
     return ($diff <= HOURS_IN_DAY);
 }
 

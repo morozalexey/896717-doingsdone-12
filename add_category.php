@@ -2,13 +2,15 @@
 require_once 'helpers.php';
 require_once 'init.php';
 $user = check_user_auth($_SESSION);
-$is_auth = $user['id'];
-$user_name = $user['name'];
+$is_auth = isset($user['id']) ? $user['id'] : false;
+if ($is_auth) {
+    $user_name = $user['name'];
+}
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $category_name = $_POST['name'];
+    $category_name = htmlspecialchars($_POST['name']);
 
     if (empty($category_name)) {
         $errors['name'] = 'Поле не заполнено';

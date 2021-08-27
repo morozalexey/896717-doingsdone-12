@@ -1,11 +1,13 @@
 <?php
 require_once 'helpers.php';
 require_once 'init.php';
+var_dump($_POST);
 $show_complete_tasks = rand(0, 1);
 $user = check_user_auth($_SESSION);
-$is_auth = $user['id'];
-$user_name = $user['name'];
-
+$is_auth = isset($user['id']) ? $user['id'] : false;
+if ($is_auth) {
+    $user_name = $user['name'];
+}
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $task_name = $_POST['name'];
+    $task_name = htmlspecialchars($_POST['name']);
     $task_date = $_POST['date'];
-    $task_cat_id = get_cat_id_by_cat_name($con, $_POST['project']);
+    $task_cat_id = get_cat_id_by_cat_name($con, $_POST['category']);
     $task_file = null;
 
     if (empty($errors)) {
@@ -55,7 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         [
             'categories' => get_categories($con, $is_auth),
             'tasks' => get_tasks($con, $is_auth),
-            'show_complete_tasks' => $show_complete_tasks
+            'show_complete_tasks' => $show_complete_tasks,
+            'all_tasks' => get_tasks($con, $is_auth),
+            'cat_id' => $cat_id
         ]
     );
 }
@@ -71,3 +75,4 @@ $layout_content = include_template(
 );
 
 print($layout_content);
+
