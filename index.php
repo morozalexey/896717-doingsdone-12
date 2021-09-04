@@ -1,43 +1,53 @@
 <?php
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
 
 $user = check_user_auth($_SESSION);
-$is_auth = isset($user['id']) ? $user['id'] : false;
-if ($is_auth) {
+$user_id = isset($user['id']) ? $user['id'] : false;
+if ($user_id) {
     $user_name = $user['name'];
 }
-$task_checked = $_GET['check'] ?? false;
-$task_id = $_GET['task_id'] ?? false;
-$show_complete_tasks = $_GET['show_completed'] ?? 0;
+$task_checked = isset($_GET['check']) ? intval($_GET['check']) : false;
+$task_id = isset($_GET['task_id']) ? intval($_GET['task_id']) : false;
+
+$show_complete_tasks = $_GET['show_completed'] ?? false;
 $cat_id = $_GET['cat_id'] ?? false;
 $search = $_GET['search'] ?? false;
 $tasks_controls= $_GET['tasks-controls'] ?? false;
 
+$all_tasks = get_tasks($con, $user_id);
+$tasks_by_category = get_tasks_by_category($con, $user_id, $cat_id);
+$categories = get_categories($con, $user_id);
+$tasks_without_done = get_tasks_without_done($con, $user_id);
+
 if (!empty($user)) {
     if ($cat_id) {
+
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $is_auth),
-                'tasks' => get_tasks_by_category($con, $cat_id),
-                'all_tasks' => get_tasks($con, $is_auth),
+                'categories' => $categories,
+                'tasks' => $tasks_by_category,
+                'all_tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks,
                 'cat_id' => $cat_id
             ]
         );
-        if (empty(get_tasks_by_category($con, $cat_id))) {
+        if (empty($tasks_by_category)) {
             header("HTTP/1.0 404 Not Found");
-            exit;
+            $page_content = include_template(
+                '404.php'
+            );
         }
     //полнотекстовый поиск
     } elseif ($search) {
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $is_auth),
+                'categories' => $categories,
                 'tasks' => get_tasks_by_search($con, [$search]),
-                'all_tasks' => get_tasks($con, $is_auth),
+                'all_tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks
             ]
         );
@@ -45,38 +55,32 @@ if (!empty($user)) {
             $page_content = include_template('search.php');
         }
     //переключатель выполненных задач
-    } elseif ($show_complete_tasks) {
+    } elseif ($show_complete_tasks === '1') {
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $is_auth),
-                'tasks' => get_tasks($con, $is_auth),
+                'categories' => $categories,
+                'all_tasks' => $all_tasks,
+                'tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks,
                 'cat_id' => $cat_id
             ]
         );
-    //изменение параметра done (не работает)
-    } elseif ($task_checked) {
-        set_done ($con, $task_id, $task_checked);
-
-        $page_content = include_template(
-            'main.php',
-            [
-                'categories' => get_categories($con, $is_auth),
-                'tasks' => get_tasks($con, $is_auth),
-                'show_complete_tasks' => $show_complete_tasks,
-                'cat_id' => $cat_id
-            ]
-        );
+    //изменение параметра done
+    } elseif ($task_id != false && $task_checked != false) {
+        task_checkbox($con, $task_id);
+        header('Location:/');
+        exit;
     //фильтр по срокам задач
     } elseif ($tasks_controls) {
-        $task_filter = get_tasks_controls($con, $is_auth, $tasks_controls);
+        $task_filter = get_tasks_controls($con, $user_id, $tasks_controls);
 
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $is_auth),
+                'categories' => $categories,
                 'tasks' => $task_filter,
+                'all_tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks,
                 'cat_id' => $cat_id
             ]
@@ -85,8 +89,9 @@ if (!empty($user)) {
         $page_content = include_template(
             'main.php',
             [
-                'categories' => get_categories($con, $is_auth),
-                'tasks' => get_tasks($con, $is_auth),
+                'categories' => $categories,
+                'tasks' => $tasks_without_done,
+                'all_tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks
             ]
         );

@@ -19,7 +19,7 @@ function get_categories($con, $user_id)
 }
 
 /**
- * Функция получает из базы массив задач
+ * Функция получает из базы массив всех задач
  *
  * @param $con подключение к базе
  *
@@ -27,7 +27,23 @@ function get_categories($con, $user_id)
  */
 function get_tasks($con, $user_id)
 {
-    $sql = 'SELECT id, name, date, cat_id, file, done, user_id  FROM task WHERE user_id = ?';
+    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Функция получает из базы массив задач за исключением выполненных
+ *
+ * @param $con подключение к базе
+ *
+ * @return array массив задач
+ */
+function get_tasks_without_done($con, $user_id)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
     $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
@@ -42,10 +58,10 @@ function get_tasks($con, $user_id)
  *
  * @return array массив задач
  */
-function get_tasks_by_category($con, $cat_id)
+function get_tasks_by_category($con, $user_id, $cat_id)
 {
-    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE cat_id = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$cat_id]);
+    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE user_id = ? AND cat_id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $cat_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -60,25 +76,9 @@ function get_tasks_by_category($con, $cat_id)
 */
 function getPostVal($name)
 {
-    return $_POST[$name] ?? "";
-}
-
-/**
- * Функция получает из базы id категории
- *
- * @param $con подключение к базе
- * @param int $cat_name принимает имя категории
- *
- * @return int id категории
- */
-function get_cat_id_by_cat_name($con, $cat_name)
-{
-    $sql = 'SELECT DISTINCT category.id FROM task JOIN category ON task.cat_id = category.id WHERE category.name = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$cat_name]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $arr = mysqli_fetch_array($res, MYSQLI_NUM);
-    return $arr[0];
+    if (isset($_POST[$name])) {
+        return strip_tags($_POST[$name]) ?? "";
+    }
 }
 
 /**
@@ -198,8 +198,6 @@ function get_tasks_by_search($con, $data=[])
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-
-
 /**
  * Функция получает из базы массив задач в зависимости от переданного параметра временного промежутка
  *
@@ -227,73 +225,27 @@ function get_tasks_controls($con, $user_id, $tasks_controls)
 }
 
 
-//просрочка
-// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW())< 0 (<1)
-
-//сегодня
-// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW()) = 1
-
-//завтра
-// SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = 9 AND DATEDIFF (date, NOW()) > 1
-
-
-
-
-
-
-
-
 /**
- * Функция меняет значение поле done на 1
+ * Функция меняет значение поле done
  *
  * @param $con подключение к базе
  * @param int $task_id принимает id задачи
  *
  */
-function set_task_done($con, $task_id)
+function task_checkbox($con, $task_id)
 {
-    $sql = 'UPDATE task  SET done = 1 WHERE id = ?';
+    $sql = 'SELECT done  FROM task WHERE id = ?';
     $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
-    return mysqli_stmt_execute($stmt);
-}
-
-
-//не работает
-
-
-/**
- * Функция меняет значение поле done на 0
- *
- * @param $con подключение к базе
- * @param int $task_id принимает id задачи
- *
- */
-function set_task_actual($con, $task_id)
-{
-    $sql = 'UPDATE task  SET done = 0 WHERE id = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
-    return mysqli_stmt_execute($stmt);
-}
-
-function set_done($con, $task_id, $task_checked)
-{
-    // $sql = 'SELECT id, done  FROM task WHERE $task_id = ?';
-    // $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
-    // mysqli_stmt_execute($stmt);
-    // $res = mysqli_stmt_get_result($stmt);
-    // $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
-
-    if ($task_checked === '1'){
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $res1 = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    $result = $res1[0]['done'];
+    if ($result === 1) {
         $sql = 'UPDATE task  SET done = 0 WHERE id = ?';
-        $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
-        mysqli_stmt_execute($stmt);
-        return $task_checked == 1;
-    }
-
-    if ($task_checked === '0' OR $task_checked === false) {
+    } elseif ($result === 0) {
         $sql = 'UPDATE task  SET done = 1 WHERE id = ?';
-        $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
-        mysqli_stmt_execute($stmt);
-        return $task_checked == 0;
     }
+    $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+    mysqli_stmt_execute($stmt);
+    return false;
 }

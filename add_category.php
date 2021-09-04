@@ -1,9 +1,11 @@
 <?php
 require_once 'helpers.php';
 require_once 'init.php';
+require_once 'models.php';
+
 $user = check_user_auth($_SESSION);
-$is_auth = isset($user['id']) ? $user['id'] : false;
-if ($is_auth) {
+$user_id = isset($user['id']) ? $user['id'] : false;
+if ($user_id) {
     $user_name = $user['name'];
 }
 $cat_id = $_GET['cat_id'] ?? false;
@@ -18,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
 
-        insert_category_to_db($con, [$category_name, $is_auth]);
+        insert_category_to_db($con, [$category_name, $user_id]);
 
         header('Location: /index.php');
 
@@ -27,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'add_category.php',
             [
                 'errors' => $errors,
-                'categories' => get_categories($con, $is_auth),
+                'categories' => get_categories($con, $user_id),
                 'tasks' => get_tasks_by_category($con, $cat_id)
             ]
         );
@@ -36,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $page_content = include_template(
         'add_category.php',
         [
-            'categories' => get_categories($con, $is_auth),
-            'tasks' => get_tasks_by_category($con, $cat_id)
+            'categories' => get_categories($con, $user_id),
+            'tasks' => get_tasks_by_category($con, $cat_id, $user_id)
         ]
     );
 }

@@ -9,7 +9,7 @@
 
                 <a class="main-navigation__list-item-link" href="/add.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
                 <span class="main-navigation__list-item-count">
-                <?= (!empty($_GET['cat_id'])) ? task_сount($all_tasks, $category['id']) : task_сount($tasks, $category['id']); ?></span>
+                <?= task_сount($all_tasks, $category['id']); ?></span>
             </li>
             <?php endforeach ; ?>
         </ul>
@@ -33,7 +33,7 @@
             <select class="form__input form__input--select" name="category" id="category">
             <option value="">Выберете категорию</option>
             <?php foreach($categories as $category) : ?>
-                <option value="<?= $category['name'] ; ?>"><?= $category['name']; ?></option>
+                <option value="<?= $category['id'] ; ?>"><?= $category['name']; ?></option>
             <?php endforeach ; ?>
             </select>
         </div>

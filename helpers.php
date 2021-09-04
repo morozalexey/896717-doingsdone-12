@@ -1,5 +1,4 @@
 <?php
-require_once 'models.php';
 const SECONDS_IN_HOUR = 3600;
 const HOURS_IN_DAY = 24;
 /**

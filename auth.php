@@ -33,13 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 } else {
-    $page_content = include_template('auth.php');
-
     if (isset($_SESSION['user'])) {
         header("Location: index.php");
         exit();
     }
 }
+
+$page_content = include_template(
+    'auth.php'
+);
 
 $layout_content = include_template(
     'layout.php',

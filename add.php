@@ -1,18 +1,19 @@
 <?php
 require_once 'helpers.php';
 require_once 'init.php';
-var_dump($_POST);
+require_once 'models.php';
+
 $show_complete_tasks = rand(0, 1);
 $user = check_user_auth($_SESSION);
-$is_auth = isset($user['id']) ? $user['id'] : false;
-if ($is_auth) {
+$user_id = isset($user['id']) ? $user['id'] : false;
+if ($user_id) {
     $user_name = $user['name'];
 }
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $required_fields = ['name', 'date'];
+    $required_fields = ['name', 'category'];
     $errors = [];
 
     foreach ($required_fields as $field) {
@@ -21,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $task_name = htmlspecialchars($_POST['name']);
+    $task_name = $_POST['name'];
     $task_date = $_POST['date'];
-    $task_cat_id = get_cat_id_by_cat_name($con, $_POST['category']);
+    $task_cat_id = intval($_POST['category']);
     $task_file = null;
 
     if (empty($errors)) {
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $task_file = 'uploads/' . $filename;
         }
 
-        insert_task_to_db($con, [$task_name, $task_date, $task_cat_id, $task_file, $is_auth]);
+        insert_task_to_db($con, [$task_name, $task_date, $task_cat_id, $task_file, $user_id]);
 
         header('Location: /index.php');
 
@@ -44,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page_content = include_template(
             'add.php',
             [
-                'categories' => get_categories($con, $is_auth),
-                'tasks' => get_tasks($con),
+                'categories' => get_categories($con, $user_id),
+                'tasks' => get_tasks($con, $user_id),
                 'show_complete_tasks' => $show_complete_tasks,
                 'errors' => $errors
             ]
@@ -55,10 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $page_content = include_template(
         'add.php',
         [
-            'categories' => get_categories($con, $is_auth),
-            'tasks' => get_tasks($con, $is_auth),
+            'categories' => get_categories($con, $user_id),
+            'tasks' => get_tasks($con, $user_id),
             'show_complete_tasks' => $show_complete_tasks,
-            'all_tasks' => get_tasks($con, $is_auth),
+            'all_tasks' => get_tasks($con, $user_id),
             'cat_id' => $cat_id
         ]
     );

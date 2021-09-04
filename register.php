@@ -1,6 +1,13 @@
 <?php
 require_once 'helpers.php';
+require_once 'models.php';
 require_once 'init.php';
+
+$user = check_user_auth($_SESSION);
+if (!empty($user)) {
+    header('Location: index.php');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -46,9 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $layout_content = include_template(
-    'layout_reg.php',
+    'layout.php',
     [
-        'page_content' => isset($page_content),
+        'page_content' => $page_content,
         'page_title' => 'Регистрация'
     ]
 );

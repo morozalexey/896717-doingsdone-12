@@ -8,7 +8,7 @@
                 ">
                     <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= htmlspecialchars($category['name']) ; ?></a>
                     <span class="main-navigation__list-item-count">
-                    <?= (!empty($_GET['cat_id'])) ? task_сount($all_tasks, $category['id']) : task_сount($tasks, $category['id']) ;?></span>
+                    <?= task_сount($all_tasks, $category['id']);?></span>
                 </li>
                 <?php endforeach ; ?>
             </ul>
@@ -36,16 +36,16 @@
             <label class="checkbox">
                 <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
                 <input class="checkbox__input visually-hidden show_completed" type="checkbox" name="done"
-                <?= ($show_complete_tasks) ? 'checked' : '' ;?>
+                <?= ($show_complete_tasks === '1') ? 'checked' : '' ;?>
                 >
                 <span class="checkbox__text">Показывать выполненные</span>
             </label>
         </div>
         <table class="tasks">
             <?php foreach($tasks as $task) : ?>
-            <?php if ( !($show_complete_tasks) && ($task['done']) ) { continue ; } ?>
+            <?php //if (($show_complete_tasks !== '1') && ($task['done']) ) { continue ; } ?>
             <tr class="tasks__item task
-                <?= ($task['done']) ? 'task--completed' : '' ; ?>
+                <?= ($task['done'] === 1) ? 'task--completed' : '' ; ?>
                 <?= (is_deadline($task['date'])) ? 'task--important' : '' ; ?>
             ">
                 <td class="task__select">
