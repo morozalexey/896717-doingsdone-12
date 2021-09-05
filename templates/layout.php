@@ -16,18 +16,22 @@
                 <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
             </a>
             <div class="main-header__side">
-                <a class="main-header__side-item button button--plus open-modal" href="add.php">Добавить задачу</a>
+                <?php if (!empty($user)) : ?>
+                    <a class="main-footer__button button button--plus" href="add.php">
+                        Добавить задачу
+                    </a>
+                <?php endif ; ?>
                 <div class="main-header__side-item user-menu">
                     <?php if (!empty($user)) : ?>
                     <div class="user-menu__data">
-                        <p><?= $user_name ?></p>
+                        <p><?= htmlspecialchars($user_name) ?></p>
                         <a href="logout.php">Выйти</a>
                     </div>
                     <?php else : ?>
                     <div class="main-header__side">
                         <a class="main-header__side-item button button--transparent" href="auth.php">Войти</a>
                     </div>
-                    <? endif ; ?>
+                    <?php endif ; ?>
                 </div>
             </div>
         </header>
@@ -41,7 +45,11 @@
             <p>© 2019, «Дела в порядке»</p>
             <p>Веб-приложение для удобного ведения списка дел.</p>
         </div>
-        <a class="main-footer__button button button--plus" href="add.php">Добавить задачу</a>
+        <?php if (!empty($user)) : ?>
+            <a class="main-footer__button button button--plus" href="add.php">
+                Добавить задачу
+            </a>
+        <?php endif ; ?>
         <div class="main-footer__social social">
             <span class="visually-hidden">Мы в соцсетях:</span>
             <a class="social__link social__link--facebook" href="#">

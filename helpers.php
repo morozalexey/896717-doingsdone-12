@@ -1,5 +1,4 @@
 <?php
-require_once 'models.php';
 const SECONDS_IN_HOUR = 3600;
 const HOURS_IN_DAY = 24;
 /**
@@ -179,7 +178,7 @@ function is_deadline($task_date)
 {
     $current_date = time();
     $task_date_to_timestamp = strtotime($task_date);
-    $diff = floor(($task_date_to_timestamp - $current_date)/SECONDS_IN_HOUR);
+    $diff = floor(($task_date_to_timestamp - $current_date) / SECONDS_IN_HOUR);
     return ($diff <= HOURS_IN_DAY);
 }
 
@@ -195,7 +194,6 @@ function check_user_auth($data = [])
     if (!empty($data)) {
         $user = $data['user'];
         return $user;
-    } else {
-        return false;
     }
+    return false;
 }

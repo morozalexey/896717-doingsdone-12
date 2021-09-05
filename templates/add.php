@@ -4,11 +4,12 @@
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach($categories as $category) : ?>
-            <li class="main-navigation__list-item <?= ($_GET['cat_id'] === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
-            ">
+                <li class="main-navigation__list-item <?= (isset($cat_id) && intval($cat_id) === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
+                ">
+
                 <a class="main-navigation__list-item-link" href="/add.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
                 <span class="main-navigation__list-item-count">
-                <?= (!empty($_GET['cat_id'])) ? task_сount($all_tasks, $category['id']) : task_сount($tasks, $category['id']); ?></span>
+                <?= task_сount($all_tasks, $category['id']); ?></span>
             </li>
             <?php endforeach ; ?>
         </ul>
@@ -28,11 +29,11 @@
             <p class="form__message"><?= $error_text; ?></p>
         </div>
         <div class="form__row">
-            <label class="form__label" for="project">Проект <sup>*</sup></label>
-            <select class="form__input form__input--select" name="project" id="project">
+            <label class="form__label" for="category">Категория <sup>*</sup></label>
+            <select class="form__input form__input--select" name="category" id="category">
             <option value="">Выберете категорию</option>
             <?php foreach($categories as $category) : ?>
-                <option value="<?= $category['name'] ; ?>"><?= $category['name'] ; ?></option>
+                <option value="<?= $category['id'] ; ?>"><?= $category['name']; ?></option>
             <?php endforeach ; ?>
             </select>
         </div>

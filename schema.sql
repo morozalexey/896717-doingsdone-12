@@ -1,6 +1,6 @@
 CREATE DATABASE doingsdone
-DEFAULT CHARACTER SET utf8
-DEFAULT COLLATE utf8_general_ci;
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
 
 USE doingsdone;
 
@@ -25,6 +25,7 @@ CREATE TABLE task (
     cat_id INT NOT NULL,
     file VARCHAR(255),
     done SMALLINT NOT NULL DEFAULT '0',
+    user_id INT NOT NULL,
     dt_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
