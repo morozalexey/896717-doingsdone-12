@@ -771,3 +771,7 @@ a:focus {
 .welcome__text p {
   margin: 20px 0;
 }
+
+.tasks-switch{
+  cursor: pointer;
+}

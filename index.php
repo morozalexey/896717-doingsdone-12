@@ -14,7 +14,7 @@ $task_id = isset($_GET['task_id']) ? intval($_GET['task_id']) : false;
 $show_complete_tasks = $_GET['show_completed'] ?? false;
 $cat_id = $_GET['cat_id'] ?? false;
 $search = $_GET['search'] ?? false;
-$tasks_controls= $_GET['tasks-controls'] ?? false;
+$tasks_switch = $_GET['tasks-switch'] ?? false;
 
 $all_tasks = get_tasks($con, $user_id);
 $tasks_by_category = get_tasks_by_category($con, $user_id, $cat_id);
@@ -55,7 +55,7 @@ if (!empty($user)) {
             $page_content = include_template('search.php');
         }
     //переключатель выполненных задач
-    } elseif ($show_complete_tasks === '1') {
+    } elseif ($show_complete_tasks && !$tasks_switch) {
         $page_content = include_template(
             'main.php',
             [
@@ -67,13 +67,13 @@ if (!empty($user)) {
             ]
         );
     //изменение параметра done
-    } elseif ($task_id != false && $task_checked != false) {
+    } elseif ($task_id && $task_checked) {
         task_checkbox($con, $task_id);
         header('Location:/');
         exit;
     //фильтр по срокам задач
-    } elseif ($tasks_controls) {
-        $task_filter = get_tasks_controls($con, $user_id, $tasks_controls);
+    } elseif ($tasks_switch) {
+        $task_filter = get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks);
 
         $page_content = include_template(
             'main.php',
