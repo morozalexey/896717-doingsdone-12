@@ -249,3 +249,19 @@ function task_checkbox($con, $task_id)
     mysqli_stmt_execute($stmt);
     return false;
 }
+
+/**
+ * Функция получаем задачи пользователей на сегодня
+ *
+ * @param $con подключение к базе
+ *
+ * @return array массив задач
+ */
+function get_users_tasks_today($con)
+{
+    $sql = "SELECT users.id, users.name as user_name, users.email, task.name as task_name, task.date FROM users JOIN task ON task.user_id = users.id WHERE task.done = 0 AND task.date = CURRENT_DATE()";
+    $stmt = db_get_prepare_stmt($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
