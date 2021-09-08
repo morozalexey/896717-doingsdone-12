@@ -215,7 +215,6 @@ function get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks)
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1';
     }
 
-
     if ($tasks_switch === 'Завтра' && !$show_complete_tasks) {
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1 AND done = 0';
     } elseif ($tasks_switch === 'Завтра' && $show_complete_tasks) {
@@ -240,7 +239,6 @@ function get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks)
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-
 /**
  * Функция меняет значение поле done
  *
@@ -264,4 +262,36 @@ function task_checkbox($con, $task_id)
     $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
     mysqli_stmt_execute($stmt);
     return false;
+}
+
+/**
+ * Функция получает из базы массив задач с истекшими сроками
+ *
+ * @param $con подключение к базе
+ *
+ * @return array массив задач
+ */
+function get_overdue_tasks($con)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE DATEDIFF (date, NOW()) <= 1 AND done = 0';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+/**
+ * Функция получаеn пользователей с задачами на сегодня
+ *
+ * @param $con подключение к базе
+ *
+ * @return array массив задач
+ */
+function get_users_tasks_today($con)
+{
+    $sql = "SELECT users.id, users.name as user_name, users.email, task.name as task_name, task.date FROM users JOIN task ON task.user_id = users.id WHERE task.done = 0 AND task.date = CURRENT_DATE()";
+    $stmt = db_get_prepare_stmt($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
