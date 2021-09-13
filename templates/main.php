@@ -22,17 +22,22 @@
             <input class="search-form__submit" type="submit" name="" value="Искать">
         </form>
         <div class="tasks-controls">
+            <form class="" action="index.php" method="GET" autocomplete="off">
             <nav class="tasks-switch">
-                <a href="/index.php?tasks-controls=all" class="tasks-switch__item
-                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'all') ? 'tasks-switch__item--active':'' ?>
-                ">Все задачи</a>
-                <a href="/index.php?tasks-controls=today" class="tasks-switch__item
-                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'today') ? 'tasks-switch__item--active':'' ?>">Повестка дня</a>
-                <a href="/index.php?tasks-controls=tommorow" class="tasks-switch__item
-                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'tommorow') ? 'tasks-switch__item--active':'' ?>">Завтра</a>
-                <a href="/index.php?tasks-controls=overdue" class="tasks-switch__item
-                <?= (isset($_GET['tasks-controls']) && $_GET['tasks-controls'] === 'overdue') ? 'tasks-switch__item--active':'' ?>">Просроченные</a>
+                <button class="tasks-switch__item
+                <?= (isset($_GET['tasks-switch']) && $_GET['tasks-switch'] === 'Все задачи') ? 'tasks-switch__item--active':'' ?>
+                " type="submit" name="tasks-switch" value="Все задачи">Все задачи</button>
+                <button class="tasks-switch__item
+                <?= (isset($_GET['tasks-switch']) && $_GET['tasks-switch'] === 'Повестка дня') ? 'tasks-switch__item--active':'' ?>
+                " type="submit" name="tasks-switch" value="Повестка дня">Повестка дня</button>
+                <button class="tasks-switch__item
+                <?= (isset($_GET['tasks-switch']) && $_GET['tasks-switch'] === 'Завтра') ? 'tasks-switch__item--active':'' ?>
+                " type="submit" name="tasks-switch" value="Завтра">Завтра</button>
+                <button class="tasks-switch__item
+                <?= (isset($_GET['tasks-switch']) && $_GET['tasks-switch'] === 'Просроченные') ? 'tasks-switch__item--active':'' ?>
+                " type="submit" name="tasks-switch" value="Просроченные">Просроченные</button>
             </nav>
+            </form>
             <label class="checkbox">
                 <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
                 <input class="checkbox__input visually-hidden show_completed" type="checkbox" name="done"

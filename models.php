@@ -207,17 +207,32 @@ function get_tasks_by_search($con, $data=[])
  *
  * @return array массив задач
  */
-function get_tasks_controls($con, $user_id, $tasks_controls)
+function get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks)
 {
-    if ($tasks_controls === 'today') {
+    if ($tasks_switch === 'Повестка дня' && !$show_complete_tasks) {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1 AND done = 0';
+    } elseif ($tasks_switch === 'Повестка дня' && $show_complete_tasks) {
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1';
-    } elseif ($tasks_controls === 'tommorow') {
+    }
+
+    if ($tasks_switch === 'Завтра' && !$show_complete_tasks) {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1 AND done = 0';
+    } elseif ($tasks_switch === 'Завтра' && $show_complete_tasks) {
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1';
-    } elseif ($tasks_controls === 'overdue') {
+    }
+
+    if ($tasks_switch === 'Просроченные' && !$show_complete_tasks) {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) <= 0   AND done = 0';
+    } elseif ($tasks_switch === 'Просроченные' && $show_complete_tasks) {
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) <= 0';
-    } else {
+    }
+
+    if ($tasks_switch === 'Все задачи' && !$show_complete_tasks) {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
+    } elseif ($tasks_switch === 'Все задачи' && $show_complete_tasks) {
         $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
     }
+
     $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
