@@ -197,3 +197,20 @@ function check_user_auth($data = [])
     }
     return false;
 }
+
+
+/**
+ * Функция считает разницу между текущей датой и датой задачи в днях
+ *
+ * @param string $task_date принимает дату задачи
+ *
+ * @return integer разницу между двумя значениями в часах
+ */
+function dates_diff($task_date)
+{
+    $current_date = time();
+    $task_date_to_timestamp = strtotime($task_date);
+    $diff = floor(($task_date_to_timestamp - $current_date)/86400);
+    return $diff;
+}
+

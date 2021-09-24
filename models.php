@@ -2,69 +2,16 @@
 require_once 'helpers.php';
 
 /**
- * Функция получает из базы массив категорий
+ * Функция возвращает сообщение об ошибке и прерывает скрипт
  *
- * @param $con подключение к базе
- * @param int $user_id принимает id пользователя
+ * @param $message сообщение об ошибке
  *
- * @return array массив с категориями
+ * @return str возвращает строку с предупреждением
  */
-function get_categories($con, $user_id)
+function db_error($message)
 {
-    $sql = 'SELECT id, name, user_id FROM category WHERE user_id = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
-
-/**
- * Функция получает из базы массив всех задач
- *
- * @param $con подключение к базе
- *
- * @return array массив задач
- */
-function get_tasks($con, $user_id)
-{
-    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
-
-/**
- * Функция получает из базы массив задач за исключением выполненных
- *
- * @param $con подключение к базе
- *
- * @return array массив задач
- */
-function get_tasks_without_done($con, $user_id)
-{
-    $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
-}
-
-/**
- * Функция получает из базы массив задач по выбранной категории
- *
- * @param $con подключение к базе
- * @param int $cat_id принимает id категории
- *
- * @return array массив задач
- */
-function get_tasks_by_category($con, $user_id, $cat_id)
-{
-    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE user_id = ? AND cat_id = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $cat_id]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    print("<h2>Ошибка: " . $message . "</h2>");
+    exit;
 }
 
 /**
@@ -79,36 +26,6 @@ function getPostVal($name)
     if (isset($_POST[$name])) {
         return strip_tags($_POST[$name]) ?? "";
     }
-}
-
-/**
- * Функция добавляет в базу новую задачу
- *
- * @param $con подключение к базе
- * @param arr $data принимает массив с данными
- *
- * @return bool возвращает true/false
- */
-function insert_task_to_db($con, $data=[])
-{
-    $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, ?, NOW())';
-    $stmt = db_get_prepare_stmt($con, $sql, $data);
-    return mysqli_stmt_execute($stmt);
-}
-
-/**
- * Функция добавляет в базу нового пользователя
- *
- * @param $con подключение к базе
- * @param arr $data принимает массив с данными
- *
- * @return bool возвращает true/false
- */
-function insert_user_to_db($con, $data=[])
-{
-    $sql = 'INSERT INTO users (name, email, pass, dt_add) VALUES (?, ?, ?, NOW())';
-    $stmt = db_get_prepare_stmt($con, $sql, $data);
-    return mysqli_stmt_execute($stmt);
 }
 
 /**
@@ -127,23 +44,6 @@ function check_email_dublicate($con, $user_mail)
     if (mysqli_num_rows($res) > 0) {
         return true;
     }
-}
-
-/**
-* Функция получает данные из базы и формирует массив данных пользователя
-*
-* @param $con подключение к базе
-* @param $email электронный адрес пользователя
-*
-* @return array массив с данными пользователя или null
-*/
-function create_user($con, $email)
-{
-    $sql = 'SELECT id, name, email, pass FROM users WHERE email = ?';
-    $stmt = db_get_prepare_stmt($con, $sql, [$email]);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    return $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 }
 
 /**
@@ -166,6 +66,38 @@ function check_email($con, $email)
 }
 
 /**
+ * Функция добавляет в базу новую задачу
+ *
+ * @param $con подключение к базе
+ * @param arr $data принимает массив с данными
+ *
+ * @return bool возвращает true/false
+ */
+function insert_task_to_db($con, $data=[])
+{
+    $sql = 'INSERT INTO task (name, date, cat_id, file, user_id, dt_add) VALUES (?, ?, ?, ?, ?, NOW())';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    $res = mysqli_stmt_execute($stmt);
+    return $res ? $res : db_error('Не удалось добавить задачу');
+}
+
+/**
+ * Функция добавляет в базу нового пользователя
+ *
+ * @param $con подключение к базе
+ * @param arr $data принимает массив с данными
+ *
+ * @return bool возвращает true/false
+ */
+function insert_user_to_db($con, $data=[])
+{
+    $sql = 'INSERT INTO users (name, email, pass, dt_add) VALUES (?, ?, ?, NOW())';
+    $stmt = db_get_prepare_stmt($con, $sql, $data);
+    $res =  mysqli_stmt_execute($stmt);
+    return $res ? $res : db_error('Не удалось добавить пользователя');
+}
+
+/**
  * Функция добавляет в базу новую категорию
  *
  * @param $con подключение к базе
@@ -177,11 +109,84 @@ function insert_category_to_db($con, $data=[])
 {
     $sql = 'INSERT INTO category (name, user_id) VALUES (?, ?)';
     $stmt = db_get_prepare_stmt($con, $sql, $data);
-    return mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_execute($stmt);
+    return $res ? $res : db_error('Не удалось добавить категорию');
+}
+
+/**
+ * Функция получает из базы массив категорий
+ *
+ * @param $con подключение к базе
+ * @param int $user_id принимает id пользователя
+ *
+ * @return array массив с категориями
+ */
+function get_categories($con, $user_id)
+{
+    $sql = 'SELECT id, name, user_id FROM category WHERE user_id = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив категорий');
+}
+
+/**
+ * Функция получает из базы массив всех задач, в зависимости от передаваемых параметров показывает или скрывает выполненные задачи
+ *
+ * @param $con подключение к базе
+ * @param $show_complete_tasks сокрытие/показ выполненных задач
+ *
+ * @return array массив задач
+ */
+function get_tasks($con, $user_id, $show_complete_tasks)
+{
+    if ($show_complete_tasks) {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
+    } else {
+        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
+    }
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив задач');
 }
 
 /**
  * Функция получает из базы массив задач по выбранной категории
+ *
+ * @param $con подключение к базе
+ * @param int $cat_id принимает id категории
+ *
+ * @return array массив задач
+ */
+function get_tasks_by_category($con, $user_id, $cat_id)
+{
+    $sql = 'SELECT id, name, date, cat_id, file, done FROM task WHERE user_id = ? AND cat_id = ? AND done = 0';
+    $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $cat_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив задач');
+}
+
+/**
+* Функция получает данные из базы и формирует массив данных пользователя
+*
+* @param $con подключение к базе
+* @param $email электронный адрес пользователя
+*
+* @return array массив с данными пользователя или null
+*/
+function create_user($con, $email)
+{
+    $sql = 'SELECT id, name, email, pass FROM users WHERE email = ?';
+    $stmt = db_get_prepare_stmt($con, $sql, [$email]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : db_error('Не удалось сформировать массив данных пользователя');
+}
+
+/**
+ * Функция получает из базы массив задач по ключу из поля поиска
  *
  * @param $con подключение к базе
  * @param int $search_data принимает id категории
@@ -195,7 +200,7 @@ function get_tasks_by_search($con, $data=[])
     $stmt = db_get_prepare_stmt($con, $sql, $data);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив задач');
 }
 
 /**
@@ -209,36 +214,48 @@ function get_tasks_by_search($con, $data=[])
  */
 function get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks)
 {
-    if ($tasks_switch === 'Повестка дня' && !$show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1 AND done = 0';
-    } elseif ($tasks_switch === 'Повестка дня' && $show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = 1';
+    if (!$show_complete_tasks) {
+        $datediff = null;
+        if ($tasks_switch === 'Просроченные') {
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF(date, NOW()) < 0 AND done = 0';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+        } else {
+            if ($tasks_switch === 'Повестка дня') {
+                $datediff = 0;
+            } elseif ($tasks_switch === 'Завтра') {
+                $datediff = 1;
+            }
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF(date, NOW()) = ? AND done = 0';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $datediff]);
+        }
     }
-
-    if ($tasks_switch === 'Завтра' && !$show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1 AND done = 0';
-    } elseif ($tasks_switch === 'Завтра' && $show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) > 1';
+    if ($show_complete_tasks) {
+        $datediff = null;
+        if ($tasks_switch === 'Просроченные') {
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF(date, NOW()) < 0';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
+        } else {
+            if ($tasks_switch === 'Повестка дня') {
+                $datediff = 0;
+            } elseif ($tasks_switch === 'Завтра') {
+                $datediff = 1;
+            }
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) = ?';
+            $stmt = db_get_prepare_stmt($con, $sql, [$user_id, $datediff]);
+        }
     }
-
-    if ($tasks_switch === 'Просроченные' && !$show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) <= 0   AND done = 0';
-    } elseif ($tasks_switch === 'Просроченные' && $show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND DATEDIFF (date, NOW()) <= 0';
+    if ($tasks_switch === 'Все задачи') {
+        if ($show_complete_tasks) {
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
+        } elseif (!$show_complete_tasks) {
+            $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
+        }
+        $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
     }
-
-    if ($tasks_switch === 'Все задачи' && !$show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ? AND done = 0';
-    } elseif ($tasks_switch === 'Все задачи' && $show_complete_tasks) {
-        $sql = 'SELECT id, name, date, cat_id, file, done, user_id FROM task WHERE user_id = ?';
-    }
-
-    $stmt = db_get_prepare_stmt($con, $sql, [$user_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив задач');
 }
-
 
 /**
  * Функция меняет значение поле done
@@ -249,18 +266,19 @@ function get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks)
  */
 function task_checkbox($con, $task_id)
 {
-    $sql = 'SELECT done  FROM task WHERE id = ?';
+    $sql = "SELECT done FROM task WHERE id = ?";
     $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $res1 = mysqli_fetch_all($res, MYSQLI_ASSOC);
     $result = $res1[0]['done'];
     if ($result === 1) {
-        $sql = 'UPDATE task  SET done = 0 WHERE id = ?';
+        $sql_arg = 0;
     } elseif ($result === 0) {
-        $sql = 'UPDATE task  SET done = 1 WHERE id = ?';
+        $sql_arg = 1;
     }
-    $stmt = db_get_prepare_stmt($con, $sql, [$task_id]);
+    $sql = "UPDATE task  SET done = ? WHERE id = ?";
+    $stmt = db_get_prepare_stmt($con, $sql, [$sql_arg, $task_id]);
     mysqli_stmt_execute($stmt);
     return false;
 }
@@ -278,5 +296,5 @@ function get_users_tasks_today($con)
     $stmt = db_get_prepare_stmt($con, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : db_error('Не удалось получить массив задач');
 }

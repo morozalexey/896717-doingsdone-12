@@ -10,20 +10,16 @@ if ($user_id) {
 }
 $task_checked = isset($_GET['check']) ? intval($_GET['check']) : false;
 $task_id = isset($_GET['task_id']) ? intval($_GET['task_id']) : false;
-
 $show_complete_tasks = $_GET['show_completed'] ?? false;
 $cat_id = $_GET['cat_id'] ?? false;
 $search = $_GET['search'] ?? false;
 $tasks_switch = $_GET['tasks-switch'] ?? false;
-
-$all_tasks = get_tasks($con, $user_id);
+$all_tasks = get_tasks($con, $user_id, $show_complete_tasks);
 $tasks_by_category = get_tasks_by_category($con, $user_id, $cat_id);
 $categories = get_categories($con, $user_id);
-$tasks_without_done = get_tasks_without_done($con, $user_id);
 
 if (!empty($user)) {
     if ($cat_id) {
-
         $page_content = include_template(
             'main.php',
             [
@@ -74,7 +70,6 @@ if (!empty($user)) {
     //фильтр по срокам задач
     } elseif ($tasks_switch) {
         $task_filter = get_tasks_controls($con, $user_id, $tasks_switch, $show_complete_tasks);
-
         $page_content = include_template(
             'main.php',
             [
@@ -90,13 +85,12 @@ if (!empty($user)) {
             'main.php',
             [
                 'categories' => $categories,
-                'tasks' => $tasks_without_done,
+                'tasks' => $all_tasks,
                 'all_tasks' => $all_tasks,
                 'show_complete_tasks' => $show_complete_tasks
             ]
         );
     }
-
     $layout_content = include_template(
         'layout.php',
         [

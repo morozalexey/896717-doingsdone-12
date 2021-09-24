@@ -29,6 +29,10 @@
             <p class="form__message"><?= $error_text; ?></p>
         </div>
         <div class="form__row">
+            <?php
+            $error_classname = !empty($errors['category']) ? "form__input--error" : "";
+            $error_text = !empty($errors['category']) ? $errors['category'] : "";
+            ?>
             <label class="form__label" for="category">Категория <sup>*</sup></label>
             <select class="form__input form__input--select" name="category" id="category">
             <option value="">Выберете категорию</option>
@@ -36,6 +40,7 @@
                 <option value="<?= $category['id'] ; ?>"><?= $category['name']; ?></option>
             <?php endforeach ; ?>
             </select>
+            <p class="form__message"><?= $error_text; ?></p>
         </div>
         <div class="form__row">
             <?php $error_classname = !empty($errors['date']) ? "form__input--error" : ""; ?>
@@ -62,3 +67,4 @@
     </form>
     </main>
 </div>
+

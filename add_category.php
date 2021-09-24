@@ -4,6 +4,11 @@ require_once 'init.php';
 require_once 'models.php';
 
 $user = check_user_auth($_SESSION);
+if (empty($user)) {
+    header('Location: index.php');
+    exit;
+}
+$user = check_user_auth($_SESSION);
 $user_id = isset($user['id']) ? $user['id'] : false;
 if ($user_id) {
     $user_name = $user['name'];
@@ -11,26 +16,20 @@ if ($user_id) {
 $cat_id = $_GET['cat_id'] ?? false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $category_name = htmlspecialchars($_POST['name']);
-
+    $category_name = strip_tags($_POST['name']);
     if (empty($category_name)) {
         $errors['name'] = 'Поле не заполнено';
     }
-
     if (empty($errors)) {
-
         insert_category_to_db($con, [$category_name, $user_id]);
-
         header('Location: /index.php');
-
     } else {
         $page_content = include_template(
             'add_category.php',
             [
                 'errors' => $errors,
                 'categories' => get_categories($con, $user_id),
-                'tasks' => get_tasks_by_category($con, $cat_id)
+                'tasks' => get_tasks_by_category($con, $user_id, $cat_id)
             ]
         );
     }
@@ -43,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]
     );
 }
-
 $layout_content = include_template(
     'layout.php',
     [
@@ -53,5 +51,4 @@ $layout_content = include_template(
         'user_name' => $user_name
     ]
 );
-
 print($layout_content);

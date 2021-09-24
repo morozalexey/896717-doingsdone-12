@@ -14,6 +14,7 @@
         $error_classname = !empty($errors['email']) ? "form__input--error" : "";
         $error_text = !empty($errors['email']) ? $errors['email'] : "";
         ?>
+
         <div class="form__row">
             <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
@@ -30,7 +31,7 @@
         <div class="form__row">
             <label class="form__label" for="pass">Пароль <sup>*</sup></label>
 
-            <input class="form__input" type="password" name="pass" id="pass" value="" placeholder="Введите пароль">
+            <input class="form__input <?= $error_classname; ?>" type="password" name="pass" id="pass" value="" placeholder="Введите пароль">
         </div>
         <p class="form__message"><?= $error_text; ?></p>
         <div class="form__row form__row--controls">
