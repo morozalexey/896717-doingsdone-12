@@ -6,7 +6,7 @@
                 <?php foreach($categories as $category) : ?>
                 <li class="main-navigation__list-item <?= (isset($cat_id) && intval($cat_id) === $category['id']) ? 'main-navigation__list-item--active' : '' ; ?>
                 ">
-                    <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= htmlspecialchars($category['name']) ; ?></a>
+                    <a class="main-navigation__list-item-link" href="/index.php?cat_id=<?= $category['id'] ; ?>"><?= $category['name'] ; ?></a>
                     <span class="main-navigation__list-item-count">
                     <?= task_сount($all_tasks, $category['id']);?></span>
                 </li>
