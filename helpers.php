@@ -50,14 +50,11 @@ function db_get_prepare_stmt($link, $sql, $data = [])
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
-
             if ($type) {
                 $types .= $type;
                 $stmt_data[] = $value;
@@ -100,7 +97,7 @@ function db_get_prepare_stmt($link, $sql, $data = [])
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
@@ -160,7 +157,7 @@ function task_сount($tasks, $category_id)
 {
     $count = 0;
     foreach ($tasks as $task) {
-        if ($task['cat_id'] === $category_id) {
+        if ($task['cat_id'] == $category_id && $task['done'] != 1) {
             $count++;
         }
     }
@@ -210,7 +207,5 @@ function dates_diff($task_date)
 {
     $current_date = time();
     $task_date_to_timestamp = strtotime($task_date);
-    $diff = floor(($task_date_to_timestamp - $current_date)/86400);
-    return $diff;
+    return floor(($task_date_to_timestamp - $current_date)/86400);
 }
-

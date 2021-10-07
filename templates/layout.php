@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?= $page_title ; ?></title>
+    <title><?= $page_title ?? false; ?></title>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/flatpickr.min.css">
@@ -24,7 +24,7 @@
                 <div class="main-header__side-item user-menu">
                     <?php if (!empty($user)) : ?>
                     <div class="user-menu__data">
-                        <p><?= htmlspecialchars($user_name) ?></p>
+                        <p><?= isset($user_name) ? htmlspecialchars($user_name) : '' ?></p>
                         <a href="logout.php">Выйти</a>
                     </div>
                     <?php else : ?>
@@ -35,10 +35,9 @@
                 </div>
             </div>
         </header>
-        <?= $page_content ; ?>
+        <?= $page_content ?? '' ; ?>
     </div>
 </div>
-
 <footer class="main-footer">
     <div class="container">
         <div class="main-footer__copyright">
