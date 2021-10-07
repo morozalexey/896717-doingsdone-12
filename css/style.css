@@ -543,7 +543,7 @@ a:focus {
 .task__select {
   position: relative;
 
-  width: 476px;
+  width: 476px !important;
 }
 
 .task__file {
@@ -771,3 +771,4 @@ a:focus {
 .welcome__text p {
   margin: 20px 0;
 }
+
