@@ -1,7 +1,7 @@
 <?php
 /**
- * @var mysqli $con подключение к базе
- */
+* @var mysqli $con подключение к базе
+*/
 require_once 'init.php';
 require_once 'helpers.php';
 require_once 'models.php';
@@ -16,19 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
     $email = trim($_POST['email']);
     $pass = $_POST['pass'];
-    $user = create_user($con, $email) ?? null;
-    $hash = $user['pass'];
+    $user = create_user($con, $email) ?? $errors['email'] = 'Такой пользователь не найден';
+    $hash = $user['pass'] ?? null;
     foreach ($required as $field) {
         if (empty($_POST[$field])) {
             $errors[$field] = 'Это поле надо заполнить';
-        } else {
-            if (!password_verify($pass, $hash)) {
-                $errors['pass'] = 'Неверный пароль';
-            }
-            if (!check_email($con, $email)) {
-                $errors['email'] = 'Такой пользователь не найден';
-            }
         }
+    }
+    if (empty($errors['pass']) && !password_verify($pass, $hash)) {
+        $errors['pass'] = 'Неверный пароль';
     }
     if (empty($errors) && $user) {
         $_SESSION['user'] = $user;
