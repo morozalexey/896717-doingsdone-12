@@ -5,7 +5,6 @@
 require_once 'init.php';
 require_once 'helpers.php';
 require_once 'models.php';
-
 $user = check_user_auth($_SESSION);
 if (!empty($user)) {
     header('Location: index.php');
